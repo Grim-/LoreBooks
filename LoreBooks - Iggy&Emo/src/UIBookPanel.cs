@@ -45,8 +45,6 @@ namespace LoreBooks
 
         public void Start()
         {
-            CreateDummyBook();
-
             Font Philsopher = Resources.FindObjectsOfTypeAll<Font>().First(it => it.name.Contains("Philosopher"));
 
             if (Philsopher != null)
@@ -66,29 +64,18 @@ namespace LoreBooks
         {
             if (ParentCharacter != null && ParentCharacter.IsLocalPlayer)
             {
-
-
                 if (ParentCharacter.CharacterUI != null)
                 {
-
+                    if (Input.GetKeyDown(KeyCode.Escape))
+                    {
+                        this.Hide();
+                    }
 
                 }
 
             }
         }
 
-        private void CreateDummyBook()
-        {
-            LoreBook TestBook = CreateNewLoreBook("EMONOMICON", "Emo-nomincon a beginners guide to eldritch horrors.", null);
-
-            TestBook.AddOrUpdatePageContent(0, new PageContent(null, "FIRST PAGE TITLE", "SHIBBLY DIBBLY DOO."));
-            TestBook.AddOrUpdatePageContent(1, new PageContent(null, "BOOZU MILK", "It was the second age of man when Boozu milk first found its way to our shores, " +
-                "everyone was like 'yeah but how did he know doing that to a cow would produce milk? Does that not warrant its own line of questioning? No one else find it strange?'"));
-
-            TestBook.AddOrUpdatePageContent(2, new PageContent(null, "THE THIRD PAGE", "Nobody knows what the third page contains as it is lost to time."));
-
-            ShowBook("EMONOMICON");
-        }
 
         //Cant use editor set references, so the slow way it is.
         private void FindUIReferences()
@@ -127,18 +114,15 @@ namespace LoreBooks
         }
 
         
-        public void ShowBook(string bookUID)
+        public void ShowBook(LoreBook loreBook)
         {
-            //show the panel if its hidden
-            if (!IsShown)
-            {
-                Show();
-            }
-
-            LoreBook loreBook = GetLoreBook(bookUID);
-
             if (loreBook != null)
             {
+                if (!IsShown)
+                {
+                    Show();
+                }
+
                 SetCurrentLoreBook(loreBook);
             }
         }
@@ -162,80 +146,6 @@ namespace LoreBooks
             }
         }
 
-        public LoreBook CreateNewLoreBook(string bookUID, string bookTitle, Sprite bookHeaderImage)
-        {
-            if (!AvailableBooks.ContainsKey(bookUID))
-            {
-                LoreBook NewBook = new LoreBook(bookUID, bookTitle, bookHeaderImage);
-                AvailableBooks.Add(bookUID, NewBook);
-                return NewBook;
-            }
-
-            return null;
-        }
-        public LoreBook GetLoreBook(string bookUID)
-        {
-            if (AvailableBooks.ContainsKey(bookUID))
-            {
-                return AvailableBooks[bookUID];
-            }
-
-            return null;
-        }
-        //this one actually sets all the various UI elements to pageIndex of the Book passed
-        private void SetPageContent(LoreBook Book, int pageIndex)
-        {
-            PageContent pageContent = Book.GetPageContent(pageIndex);
-
-            if (pageContent != null)
-            {
-                PageContent CurrentPageContent = pageContent;
-
-                //if its the first page use the book title, else use the page title
-                if (pageIndex == 0)
-                {
-                    if (!String.IsNullOrEmpty(Book.TitlePageContent))
-                    {
-                        TitleLabel.gameObject.SetActive(true);
-                        SetTitleTextContent(Book.TitlePageContent);
-                    }
-                    else
-                    {
-                        TitleLabel.gameObject.SetActive(false);
-                    }
-                }
-                else if (pageIndex > 0)
-                {
-                    if (!String.IsNullOrEmpty(CurrentPageContent.PageTitle))
-                    {
-                        TitleLabel.gameObject.SetActive(true);
-                        SetTitleTextContent(CurrentPageContent.PageTitle);
-                    }
-                    else
-                    {
-                        TitleLabel.gameObject.SetActive(false);
-                    }
-                }
-
-                SetTextContent(CurrentPageContent.TextContent);
-
-                if (CurrentPageContent.HeaderImage != null)
-                {
-                    SetHeaderImage(CurrentPageContent.HeaderImage);
-                }
-
-                SetCurrentPageIndex(pageIndex);
-            }
-        }
-
-        public void ChangeToPage(int pageIndex)
-        {
-            if (!IsPageTransitioning && CurrentBook != null && CurrentBook.HasPage(pageIndex))
-            {
-                ChangeToPage(CurrentBook, pageIndex);
-            }
-        }
-
         public void ChangeToPage(LoreBook Book, int pageIndex)
         {
             if (!IsPageTransitioning && Book.HasPage(pageIndex))
@@ -244,7 +154,54 @@ namespace LoreBooks
             }
 
         }
+        //this one actually sets all the various UI elements to pageIndex of the Book passed
+        private void SetPageContent(LoreBook Book, int pageIndex)
+        {
+            if (Book.HasPage(pageIndex))
+            {
+                PageContent pageContent = Book.GetPageContent(pageIndex);
 
+                if (pageContent != null)
+                {
+                    PageContent CurrentPageContent = pageContent;
+
+                    //if its the first page use the book title, else use the page title
+                    if (pageIndex == 0)
+                    {
+                        if (!String.IsNullOrEmpty(Book.TitlePageContent))
+                        {
+                            TitleLabel.gameObject.SetActive(true);
+                            SetTitleTextContent(Book.TitlePageContent);
+                        }
+                        else
+                        {
+                            TitleLabel.gameObject.SetActive(false);
+                        }
+                    }
+                    else if (pageIndex > 0)
+                    {
+                        if (!String.IsNullOrEmpty(CurrentPageContent.PageTitle))
+                        {
+                            TitleLabel.gameObject.SetActive(true);
+                            SetTitleTextContent(CurrentPageContent.PageTitle);
+                        }
+                        else
+                        {
+                            TitleLabel.gameObject.SetActive(false);
+                        }
+                    }
+
+                    SetTextContent(CurrentPageContent.TextContent);
+
+                    if (CurrentPageContent.HeaderImage != null)
+                    {
+                        SetHeaderImage(CurrentPageContent.HeaderImage);
+                    }
+
+                    SetCurrentPageIndex(pageIndex);
+                }
+            }
+        }
         private IEnumerator FadePage(LoreBook Book, int pageIndex)
         {
             if (pageIndex < 0 || pageIndex > Book.PageCount)
@@ -282,6 +239,7 @@ namespace LoreBooks
             yield break;
         }
 
+
         public void Show()
         {
             if (CanvasGroup)
@@ -291,7 +249,6 @@ namespace LoreBooks
                 IsShown = true;
             }
         }
-
         public void Hide()
         {
             if (CanvasGroup)

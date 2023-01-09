@@ -44,8 +44,10 @@ namespace LoreBooks
 
         public bool HasPage(int pageIndex)
         {
-            return pageIndex <= PageCount;
+            return PagesContent.ContainsKey(pageIndex);
         }
+
+        
 
         public PageContent GetPageContent(int pageIndex)
         {
