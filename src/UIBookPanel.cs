@@ -214,6 +214,7 @@ namespace LoreBooks
                 }
             }
         }
+
         private IEnumerator FadePage(LoreBook Book, int pageIndex)
         {
             if (pageIndex < 0 || pageIndex > Book.PageCount)

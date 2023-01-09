@@ -19,11 +19,6 @@ namespace LoreBooks
         public const string NAME = "LoreBooks";
         public const string VERSION = "1.0.0";
 
-
-        public ControlsInput.MenuActions HideKey = ControlsInput.MenuActions.Cancel;
-        public ControlsInput.MenuActions NextPageKey = ControlsInput.MenuActions.GoToNextMenu;
-        public ControlsInput.MenuActions PrevPageKey = ControlsInput.MenuActions.GoToPreviousMenu;
-
         internal static ManualLogSource Log;
         public static LoreBooksMod Instance;
 
@@ -56,21 +51,13 @@ namespace LoreBooks
         private void AddDummyBooks()
         {
             LoreBook TestBook = new LoreBook("EMONOMICON", "Emo-nomincon a beginners guide to eldritch horrors.", null);
-            TestBook.AddOrUpdatePageContent(0, new PageContent(null, "FIRST PAGE TITLE", "SHIBBLY DIBBLY DOO."));
-            TestBook.AddOrUpdatePageContent(1, new PageContent(null, "BOOZU MILK", "It was the second age of man when Boozu milk first found its way to our shores, " +
-                "everyone was like 'yeah but how did he know doing that to a cow would produce milk? Does that not warrant its own line of questioning? No one else find it strange?'"));
+            TestBook.AddOrUpdatePageContent(0, new PageContent(null, "EMONOMICON", 
+                "Cahf ah nafl mglw'nafh hh' ahor syha'h ah'legeth, ng llll or'azath syha'hnahh n'ghftephai n'gha ahornah ah'mglw'nafh"));
 
-            TestBook.AddOrUpdatePageContent(2, new PageContent(null, "THE THIRD PAGE", "Nobody knows what the third page contains as it is lost to time."));
+            TestBook.AddOrUpdatePageContent(1, new PageContent(null, "Ahf' the", 
+                "H' mgepah second age ot shuggoth ahhai boozu milk ehyeog h' mgepmgah'n'ghft way l' c' shores, riuh'eor mgepah like 'yeah mgng ahh h' mgepah kadishtu ah cahf l' boozu would produce boozu milk? ehyenah else h' mgah'n'ghft or'azath?'"));
 
-            AddLoreBook(-2104, "EMONOMICON", TestBook);
-
-            LoreBook Anotherbook = new LoreBook("EmoTwo", "A truly awful book.", null);
-
-            Anotherbook.AddOrUpdatePageContent(0, new PageContent(null, "HAHAHA", "*fart*"));
-            Anotherbook.AddOrUpdatePageContent(1, new PageContent(null, "AGAIN", "*fart* *fart*"));
-            Anotherbook.AddOrUpdatePageContent(2, new PageContent(null, "RUDE", "Nobody knows what the third page contains as it is lost to time."));
-
-            AddLoreBook(-2105, "EmoTwo", Anotherbook);
+            AddLoreBook(-2105, "EMONOMICON", TestBook);
         }
 
         private void SL_BeforePacksLoaded()
@@ -78,22 +65,12 @@ namespace LoreBooks
             SL_Item Emonomicon = new SL_Item()
             {
                 Target_ItemID = 5601001,
-                New_ItemID = -2104,
+                New_ItemID = -2105,
                 Name = "THE EMONOMICON",
                 Description = "A Profane book."
             };
 
             Emonomicon.ApplyTemplate();
-
-            SL_Item OtherBook = new SL_Item()
-            {
-                Target_ItemID = 5601001,
-                New_ItemID = -2105,
-                Name = "ANOTHER BOOK!",
-                Description = "A book."
-            };
-
-            OtherBook.ApplyTemplate();
         }
 
         public void AddLoreBook(int bookItemID, string bookUID, LoreBook loreBook)
