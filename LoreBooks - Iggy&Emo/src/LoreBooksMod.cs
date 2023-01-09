@@ -28,6 +28,8 @@ namespace LoreBooks
         //itemID, LorebookData
         public Dictionary<int, LoreBook> StoredBooks = new Dictionary<int, LoreBook>();
 
+        public Action OnReady;
+
         internal void Awake()
         {
             Log = this.Logger;
@@ -36,11 +38,19 @@ namespace LoreBooks
             Log.LogMessage($"{NAME} Loaded.");
 
             SL.BeforePacksLoaded += SL_BeforePacksLoaded;
-            // Harmony is for patching methods. If you're not patching anything, you can comment-out or delete this line.
 
+            new Harmony(GUID).PatchAll();
+        }
 
+        public void Start()
+        {
+            OnReady?.Invoke();
+            AddDummyBooks();
+        }
+        
+        private void AddDummyBooks()
+        {
             LoreBook TestBook = new LoreBook("EMONOMICON", "Emo-nomincon a beginners guide to eldritch horrors.", null);
-
             TestBook.AddOrUpdatePageContent(0, new PageContent(null, "FIRST PAGE TITLE", "SHIBBLY DIBBLY DOO."));
             TestBook.AddOrUpdatePageContent(1, new PageContent(null, "BOOZU MILK", "It was the second age of man when Boozu milk first found its way to our shores, " +
                 "everyone was like 'yeah but how did he know doing that to a cow would produce milk? Does that not warrant its own line of questioning? No one else find it strange?'"));
@@ -56,12 +66,6 @@ namespace LoreBooks
             Anotherbook.AddOrUpdatePageContent(2, new PageContent(null, "RUDE", "Nobody knows what the third page contains as it is lost to time."));
 
             AddLoreBook(-2105, "EmoTwo", Anotherbook);
-            new Harmony(GUID).PatchAll();
-        }
-
-        private void OnSLEXLoaded()
-        {
-
         }
 
         private void SL_BeforePacksLoaded()
