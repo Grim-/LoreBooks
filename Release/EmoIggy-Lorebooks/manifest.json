@@ -1,0 +1,11 @@
+{
+    "name": "LoreBooks",
+    "version_number": "1.0.0",
+    "author" : "Emo & Iggy",
+    "website_url": "https://github.com/Grim-/LoreBooks",
+    "description": "Allows mod developers to add custom books to the game, that are displayed on a custom UI.",
+    "dependencies": [
+	"sinai-dev-SideLoader-3.7.12",
+        "BepInEx-BepInExPack_Outward-5.4.8"
+    ]
+}
