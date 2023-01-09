@@ -49,6 +49,7 @@ namespace LoreBooks
 
             if (Philsopher != null)
             {
+                SetTitleFont(Philsopher);
                 SetContentFont(Philsopher);
             }
           
@@ -64,21 +65,26 @@ namespace LoreBooks
         {
             if (ParentCharacter != null)
             {
-                if (IsShown && ControlsInput.MenuCancel(ParentCharacter.OwnerPlayerSys.PlayerID))
+                if (IsShown)
                 {
-                    Hide();
+
+                    if (ControlsInput.MenuCancel(ParentCharacter.OwnerPlayerSys.PlayerID))
+                    {
+                        Hide();
+                    }
+
+                    if (ControlsInput.GoToPreviousFilterTab(ParentCharacter.OwnerPlayerSys.PlayerID))
+                    {
+                        GoToPrevPage();
+                    }
+
+
+                    if (ControlsInput.GoToNextFilterTab(ParentCharacter.OwnerPlayerSys.PlayerID))
+                    {
+                        GoToNextPage();
+                    }
                 }
 
-                if (ControlsInput.Attack1Release(ParentCharacter.OwnerPlayerSys.PlayerID))
-                {
-                    GoToPrevPage();
-                }
-
-
-                if (ControlsInput.Attack2Release(ParentCharacter.OwnerPlayerSys.PlayerID))
-                {
-                    GoToNextPage();
-                }
             }
         }
 

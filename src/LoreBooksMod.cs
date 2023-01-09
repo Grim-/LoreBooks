@@ -19,6 +19,11 @@ namespace LoreBooks
         public const string NAME = "LoreBooks";
         public const string VERSION = "1.0.0";
 
+
+        public ControlsInput.MenuActions HideKey = ControlsInput.MenuActions.Cancel;
+        public ControlsInput.MenuActions NextPageKey = ControlsInput.MenuActions.GoToNextMenu;
+        public ControlsInput.MenuActions PrevPageKey = ControlsInput.MenuActions.GoToPreviousMenu;
+
         internal static ManualLogSource Log;
         public static LoreBooksMod Instance;
 
