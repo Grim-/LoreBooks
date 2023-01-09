@@ -62,17 +62,23 @@ namespace LoreBooks
 
         private void Update()
         {
-            if (ParentCharacter != null && ParentCharacter.IsLocalPlayer)
+            if (ParentCharacter != null)
             {
-                if (ParentCharacter.CharacterUI != null)
+                if (IsShown && ControlsInput.MenuCancel(ParentCharacter.OwnerPlayerSys.PlayerID))
                 {
-                    if (Input.GetKeyDown(KeyCode.Escape))
-                    {
-                        this.Hide();
-                    }
-
+                    Hide();
                 }
 
+                if (ControlsInput.Attack1Release(ParentCharacter.OwnerPlayerSys.PlayerID))
+                {
+                    GoToPrevPage();
+                }
+
+
+                if (ControlsInput.Attack2Release(ParentCharacter.OwnerPlayerSys.PlayerID))
+                {
+                    GoToNextPage();
+                }
             }
         }
 
