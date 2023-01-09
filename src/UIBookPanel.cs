@@ -12,7 +12,7 @@ namespace LoreBooks
     [DisallowMultipleComponent]
     public class UIBookPanel : MonoBehaviour
     {
-        public float PageTransitionSpeed = 1.2f;
+        public float PageTransitionSpeed = 1.4f;
 
         public Text TitleLabel;
         public Text ContentLabel;
@@ -135,14 +135,21 @@ namespace LoreBooks
                     Show();
                 }
 
-                SetCurrentLoreBook(loreBook);
+                SetCurrentLoreBook(loreBook);          
             }
         }
+
         public void SetCurrentLoreBook(LoreBook NewBook)
         {
             CurrentBook = NewBook;
             SetPageContent(CurrentBook, 0);
+
+            if (ParentCharacter != null)
+            {
+                CurrentBook.OnBookOpened?.Invoke(ParentCharacter);
+            }   
         }
+
         public void SetTitleFont(Font Font)
         {
             if (TitleLabel != null && Font != null)

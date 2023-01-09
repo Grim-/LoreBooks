@@ -50,7 +50,11 @@ namespace LoreBooks
         
         private void AddDummyBooks()
         {
-            LoreBook TestBook = new LoreBook("EMONOMICON", "Emo-nomincon a beginners guide to eldritch horrors.", null);
+            LoreBook TestBook = new LoreBook("EMONOMICON", "Emo-nomincon a beginners guide to eldritch horrors.", null, (Character) =>
+            {
+                Character.StatusEffectMngr.AddStatusEffect("Bleeding");
+            });
+
             TestBook.AddOrUpdatePageContent(0, new PageContent(null, "EMONOMICON", 
                 "Cahf ah nafl mglw'nafh hh' ahor syha'h ah'legeth, ng llll or'azath syha'hnahh n'ghftephai n'gha ahornah ah'mglw'nafh"));
 

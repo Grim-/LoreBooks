@@ -15,14 +15,20 @@ namespace LoreBooks
 
         public string TitlePageContent;
         public Sprite TitlePageImage;
+
+
+        public Action<Character> OnBookOpened;
+
+
         public int PageCount => PagesContent.Count;
         private Dictionary<int, PageContent> PagesContent = new Dictionary<int, PageContent>();
 
-        public LoreBook(string bookUID, string titlePageContent, Sprite titlePageImage)
+        public LoreBook(string bookUID, string titlePageContent, Sprite titlePageImage, Action<Character> onBookOpened)
         {
             BookUID = bookUID;
             TitlePageContent = titlePageContent;
             TitlePageImage = titlePageImage;
+            OnBookOpened = onBookOpened;
         }
 
         public void AddOrUpdatePageContent(int index, PageContent content)
