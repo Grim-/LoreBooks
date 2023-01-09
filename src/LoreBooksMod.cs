@@ -22,6 +22,7 @@ namespace LoreBooks
         internal static ManualLogSource Log;
         public static LoreBooksMod Instance;
 
+        public static ConfigEntry<float> UIScale;
         private GameObject UIPrefab => GetFromAssetBundle<GameObject>("lorebooks", "lorebookui", "UIBookPanel");
 
         private Dictionary<Character, UIBookPanel> UIBookInstances = new Dictionary<Character, UIBookPanel>();
@@ -35,12 +36,16 @@ namespace LoreBooks
             Log = this.Logger;
             Instance = this;
 
+
+            UIScale = Config.Bind(NAME, $"{NAME} UI Scale", 0.75f, "UI Scaling?");
+
             Log.LogMessage($"{NAME} Loaded.");
 
             SL.BeforePacksLoaded += SL_BeforePacksLoaded;
 
             new Harmony(GUID).PatchAll();
         }
+
 
         public void Start()
         {
@@ -77,6 +82,13 @@ namespace LoreBooks
             Emonomicon.ApplyTemplate();
         }
 
+
+        /// <summary>
+        /// Adds a new LoreBook to the AvailableBooks dictionary
+        /// </summary>
+        /// <param name="bookItemID">The ItemID of the In-game book Item</param>
+        /// <param name="bookUID">A Unique ID for your book to reference later with ShowBook(bookUID) </param>
+        /// <param name="loreBook"></param>
         public void AddLoreBook(int bookItemID, string bookUID, LoreBook loreBook)
         {
             if (!StoredBooks.ContainsKey(bookItemID))
@@ -85,6 +97,7 @@ namespace LoreBooks
             }
             else StoredBooks[bookItemID] = loreBook;
         }
+
         public LoreBook GetLoreBook(int bookItemID)
         {
             if (StoredBooks.ContainsKey(bookItemID))
@@ -108,9 +121,12 @@ namespace LoreBooks
                     if (Character.CharacterUI != null)
                     {
                         GameObject UIInstance = GameObject.Instantiate(UIPrefab);
-                        ((RectTransform)UIInstance.transform).SetParent(Character.CharacterUI.transform, false);
+
+                        RectTransform UIRect = (RectTransform)UIInstance.transform;
+                        UIRect.SetParent(Character.CharacterUI.transform, false);
                         UIBookPanel UIBookManager = UIInstance.AddComponent<UIBookPanel>();
                         UIBookManager.SetParentCharacter(Character);
+                        UIRect.localScale = new Vector3(LoreBooksMod.UIScale.Value, LoreBooksMod.UIScale.Value, LoreBooksMod.UIScale.Value);
 
                         //usual outward problems, need to delay it give it time to find references
                         DelayDo(() =>

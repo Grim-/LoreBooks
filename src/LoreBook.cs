@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BepInEx.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,7 @@ namespace LoreBooks
 
         public string TitlePageContent;
         public Sprite TitlePageImage;
+
 
 
         public Action<Character> OnBookOpened;
