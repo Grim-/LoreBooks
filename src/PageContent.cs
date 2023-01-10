@@ -14,6 +14,11 @@ namespace LoreBooks
         public string PageTitle = string.Empty;
         public string TextContent = string.Empty;
 
+        public PageContent()
+        {
+
+        }
+
         public PageContent(Sprite headerImage, string pageTitle, string textContent)
         {
             HeaderImage = headerImage;

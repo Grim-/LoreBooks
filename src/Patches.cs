@@ -71,5 +71,18 @@ namespace LoreBooks
             }
             return true;
         }
+
+
+        [HarmonyPatch(typeof(Character), nameof(Character.Awake))]
+        public static class CharacterAwakePatch
+        {
+            static void Postfix(Character __instance)
+            {
+                LoreBooksMod.Instance.DelayDo(() =>
+                {
+                    if (__instance.IsLocalPlayer) LoreBooksMod.Instance.CreateBookUIForCharacter(__instance);
+                }, 3f);
+            }
+        }
     }
 }
