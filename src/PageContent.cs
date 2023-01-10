@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using UnityEngine;
 
 namespace LoreBooks
@@ -13,6 +14,9 @@ namespace LoreBooks
         public Sprite HeaderImage = null;
         public string PageTitle = string.Empty;
         public string TextContent = string.Empty;
+
+        [XmlIgnore]
+        public Func<Character, LoreBook, bool> CanOpenPredicate;
 
         public PageContent()
         {

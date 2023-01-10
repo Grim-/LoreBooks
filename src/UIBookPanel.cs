@@ -16,6 +16,9 @@ namespace LoreBooks
 
         public Text TitleLabel;
         public Text ContentLabel;
+        public Text CurrentPageLabel;
+        public Text PreviousPageLabel;
+        public Text NextPageLabel;
         public Image HeaderImage;
         public Button NextButton;
         public Button PrevButton;
@@ -25,11 +28,6 @@ namespace LoreBooks
         //again cant use editor set references, I will cache it if it becomes a problem, 
         //but anyone opening enough books per frame to see the results of that problem, have another problem entirely.
         public CanvasGroup ContentCanvasGroup => transform.Find("Panel/Scroll View/Viewport/Content").gameObject.GetComponent<CanvasGroup>();
-
-        //bookUID, LoreBook
-        private Dictionary<string, LoreBook> AvailableBooks = new Dictionary<string, LoreBook>();
-
-
         public Character ParentCharacter;
 
         private LoreBook CurrentBook = null;
@@ -99,11 +97,12 @@ namespace LoreBooks
         //Cant use editor set references, so the slow way it is.
         private void FindUIReferences()
         {
-            ContentLabel = transform.Find("Panel/Scroll View/Viewport/Content").gameObject.GetComponent<Text>();
+            HeaderImage = transform.Find("Panel/Scroll View/Image").gameObject.GetComponent<Image>();
 
             TitleLabel = transform.Find("Panel/Title").gameObject.GetComponent<Text>();
 
             NextButton = transform.Find("NextPage").gameObject.GetComponent<Button>();
+            NextPageLabel = transform.Find("NextPageLabel").gameObject.GetComponent<Text>();
 
             if (NextButton != null)
             {
@@ -112,6 +111,7 @@ namespace LoreBooks
 
 
             PrevButton = transform.Find("PreviousPage").gameObject.GetComponent<Button>();
+            PreviousPageLabel = transform.Find("PreviousPageLabel").gameObject.GetComponent<Text>();
 
 
             if (PrevButton != null)
@@ -119,17 +119,10 @@ namespace LoreBooks
                 PrevButton.onClick.AddListener(GoToPrevPage);
             }
 
-            CloseButton = transform.Find("CloseButton").gameObject.GetComponent<Button>();
 
-            if (CloseButton != null)
-            {
-                CloseButton.onClick.AddListener(() =>
-                {
-                    Hide();
-                });
-            }
+            CurrentPageLabel = transform.Find("CurrentPageLabel").gameObject.GetComponent<Text>();
 
-            HeaderImage = transform.Find("Panel/Scroll View/Image").gameObject.GetComponent<Image>();
+            ContentLabel = transform.Find("Panel/Scroll View/Viewport/Content").gameObject.GetComponent<Text>();
         }
 
         
@@ -137,18 +130,23 @@ namespace LoreBooks
         {
             if (loreBook != null)
             {
-                if (!IsShown)
+                if (loreBook.CanOpen(ParentCharacter))
                 {
-                    Show();
-                }
+                    if (!IsShown)
+                    {
+                        Show();
+                    }
 
-                SetCurrentLoreBook(loreBook);          
+                    SetCurrentLoreBook(loreBook);
+                }   
             }
         }
 
         public void SetCurrentLoreBook(LoreBook NewBook)
         {
             CurrentBook = NewBook;
+
+
             SetPageContent(CurrentBook, 0);
 
             if (ParentCharacter != null)
@@ -180,42 +178,63 @@ namespace LoreBooks
             }
 
         }
+
+        private void SetCurrentPageLabel(string CurrentPage)
+        {
+            if (CurrentPageLabel != null)
+            {
+                CurrentPageLabel.text = CurrentPage;
+            }
+        }
+
+        private void SetPreviousPageLabelKey(string value)
+        {
+            if (PreviousPageLabel != null)
+            {
+                PreviousPageLabel.text = value;
+            }
+        }
+
+        private void SetNextPageLabelKey(string value)
+        {
+            if (NextPageLabel != null)
+            {
+                NextPageLabel.text = value;
+            }
+        }
+
+
         //this one actually sets all the various UI elements to pageIndex of the Book passed
         private void SetPageContent(LoreBook Book, int pageIndex)
         {
             if (Book.HasPage(pageIndex))
             {
+
+                //if (Book.GetPageContent(pageIndex).CanOpenPredicate != null)
+                //{
+
+                //    if (Book.GetPageContent(pageIndex).CanOpenPredicate?.Invoke(ParentCharacter, Book))
+                //    {
+
+                //    }
+                //}
+
                 PageContent pageContent = Book.GetPageContent(pageIndex);
 
                 if (pageContent != null)
                 {
                     PageContent CurrentPageContent = pageContent;
 
-                    //if its the first page use the book title, else use the page title
-                    if (pageIndex == 0)
+                    if (!String.IsNullOrEmpty(CurrentPageContent.PageTitle))
                     {
-                        if (!String.IsNullOrEmpty(Book.TitlePageContent))
-                        {
-                            TitleLabel.gameObject.SetActive(true);
-                            SetTitleTextContent(Book.TitlePageContent);
-                        }
-                        else
-                        {
-                            TitleLabel.gameObject.SetActive(false);
-                        }
+                        TitleLabel.gameObject.SetActive(true);
+                        SetTitleTextContent(CurrentPageContent.PageTitle);
                     }
-                    else if (pageIndex > 0)
+                    else
                     {
-                        if (!String.IsNullOrEmpty(CurrentPageContent.PageTitle))
-                        {
-                            TitleLabel.gameObject.SetActive(true);
-                            SetTitleTextContent(CurrentPageContent.PageTitle);
-                        }
-                        else
-                        {
-                            TitleLabel.gameObject.SetActive(false);
-                        }
+                        TitleLabel.gameObject.SetActive(false);
                     }
+
 
                     SetTextContent(CurrentPageContent.TextContent);
 
@@ -224,7 +243,9 @@ namespace LoreBooks
                         SetHeaderImage(CurrentPageContent.HeaderImage);
                     }
 
+                    Book.OnPageOpened?.Invoke(ParentCharacter, pageIndex);
                     SetCurrentPageIndex(pageIndex);
+                    SetCurrentPageLabel($"{CurrentPageIndex+1} / { Book.PageCount}");
                 }
             }
         }
@@ -349,6 +370,7 @@ namespace LoreBooks
                 ContentLabel.text = content;
             }
         }
+
         private void SetHeaderImage(Sprite headerImage)
         {
             if (headerImage != null)
@@ -362,6 +384,11 @@ namespace LoreBooks
         private void SetCurrentPageIndex(int newPageIndex)
         {
             CurrentPageIndex = newPageIndex;
+        }
+
+        public virtual bool CanCharacterOpenBook(LoreBook LoreBook, Character Character)
+        {
+            return true;
         }
     }
 }

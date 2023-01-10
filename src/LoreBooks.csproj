@@ -340,6 +340,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="LoreBook.cs" />
+    <Compile Include="LoreBookDefinition.cs" />
     <Compile Include="LoreBooksMod.cs" />
     <Compile Include="PageContent.cs" />
     <Compile Include="Patches.cs" />

@@ -3,7 +3,6 @@ using BepInEx.Bootstrap;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
-using LoreBooks;
 using SideLoader;
 using System;
 using System.Collections;
@@ -42,6 +41,7 @@ namespace LoreBooks
         /// You can use this event to find out when the mod is fully loaded, in order to add new Books.
         /// </summary>
         public Action OnReady;
+        public Action OnBooksLoaded;
 
 
         internal void Awake()
@@ -63,6 +63,45 @@ namespace LoreBooks
         public void Start()
         {
             OnReady?.Invoke();
+
+
+
+            //OnBooksLoaded += () =>
+            //{
+            //    LoreBook featureBook = LoreBooksMod.Instance.StoredBooks[-2104];
+
+            //    featureBook.OnBookOpened += (Character Character) =>
+            //    {
+            //        Character.CharacterUI.ShowInfoNotification("Book opened");
+            //    };
+
+            //    featureBook.OnPageOpened += (Character Character, int index) =>
+            //    {
+            //        Character.CharacterUI.ShowInfoNotification($"Page {index} opened");
+
+            //        if (index == 0)
+            //        {
+            //            Character.StatusEffectMngr.AddStatusEffect("Health Recovery 4");
+            //        }
+            //        if (index == 1)
+            //        {
+            //            Character.StatusEffectMngr.AddStatusEffect("Health Recovery 4");
+            //        }
+            //    };
+
+
+            //    featureBook.CanOpenPredicate += (Character Character, LoreBook LoreBook) =>
+            //    {
+            //        //internalized lexicon
+            //        return Character.Inventory.SkillKnowledge.IsItemLearned(8205170);
+            //    };
+
+
+            //};
+
+            //featureBook.AddOrUpdatePageContent(0, new PageContent(null, "Page 1", "<color=red>You can color text with the  </color> "));
+            //featureBook.AddOrUpdatePageContent(1, new PageContent(null, "Page 2", "<color=green>PAGE TWO IS A PAGE OF HEALING</color>"));
+            //AddLoreBook(-2104, "FeatureTest", featureBook);
         }
         
 
@@ -75,20 +114,37 @@ namespace LoreBooks
 
                 if (HasFolder(Path))
                 {
+                    Log.LogMessage($"Found LoreBooks folder.");
+
                     string[] filePaths = Directory.GetFiles(Path, "*.xml");
+
                     foreach (var item in filePaths)
                     {
                         LoreBookDefinition bookDefinition = DeserializeFromXML<LoreBookDefinition>(item);
-                        LoreBook loreBook = new LoreBook(bookDefinition.BookUID, bookDefinition.BookTitle, null, null);
 
-                        for (int i = 0; i < bookDefinition.Pages.Count; i++)
+                        if (bookDefinition != null)
                         {
-                            loreBook.AddOrUpdatePageContent(i, bookDefinition.Pages[i]);
+                            LoreBook loreBook = new LoreBook(bookDefinition.BookUID, bookDefinition.BookTitle, bookDefinition.BookTitlePageContent, null, null);
+
+                            loreBook.AddOrUpdatePageContent(0, new PageContent(null, bookDefinition.BookTitle, bookDefinition.BookTitlePageContent));
+
+                            for (int i = 0; i < bookDefinition.Pages.Count; i++)
+                            {
+                                int IPlus = i + 1;
+                                loreBook.AddOrUpdatePageContent(IPlus, new PageContent(null, bookDefinition.Pages[i].PageTitle, bookDefinition.Pages[i].TextContent));
+                            }
+
+
+ 
+                            LoreBooksMod.Instance.AddLoreBook(bookDefinition.ItemID, bookDefinition.BookUID, loreBook);
                         }
-                        LoreBooksMod.Instance.AddLoreBook(bookDefinition.ItemID, bookDefinition.BookUID, loreBook);
+
+
                     }
                 }
             }
+
+            OnBooksLoaded?.Invoke();
         }
 
         public T DeserializeFromXML<T>(string path)
@@ -114,6 +170,8 @@ namespace LoreBooks
         /// <param name="loreBook"></param>
         public void AddLoreBook(int bookItemID, string bookUID, LoreBook loreBook)
         {
+            Log.LogMessage($"Adding Book UID : {bookUID} Page Count {loreBook.PageCount}");
+
             if (!StoredBooks.ContainsKey(bookItemID))
             {
                 StoredBooks.Add(bookItemID, loreBook);
@@ -142,7 +200,7 @@ namespace LoreBooks
                         DelayDo(() =>
                         {
                             UIBookManager.Hide();
-                        }, 1f);
+                        }, 2f);
 
                         UIBookInstances.Add(Character, UIBookManager);
 
@@ -204,14 +262,4 @@ namespace LoreBooks
         }
         #endregion
     }
-}
-
-[System.Serializable]
-public class LoreBookDefinition
-{
-    public int ItemID;
-    public string BookUID;
-    public string BookTitle;
-    public string BookTitlePageContent;
-    public List<PageContent> Pages;
 }

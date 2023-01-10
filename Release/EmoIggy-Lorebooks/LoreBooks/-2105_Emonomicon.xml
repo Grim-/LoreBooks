@@ -1,0 +1,32 @@
+<LoreBookDefinition>
+<ItemID>-2105</ItemID>
+<BookUID>emonomicon</BookUID>
+<BookTitle>
+<![CDATA[
+<color=magenta><size=45>Emonomicon</size></color>
+]]>
+</BookTitle>
+<BookTitlePageContent>
+<![CDATA[
+  <color=red>wduiowdw</color>
+]]>
+</BookTitlePageContent>
+<Pages>
+  <PageContent>
+    <PageTitle>Page 1</PageTitle>
+    <TextContent>
+<![CDATA[
+  <b>BOLD</b>
+]]>
+  </TextContent>
+  </PageContent>
+  <PageContent>
+    <PageTitle>Ahfthe</PageTitle>
+    <TextContent>
+<![CDATA[
+  <i>ITALIC</i>
+]]>
+   </TextContent>
+  </PageContent>
+</Pages>
+</LoreBookDefinition>
