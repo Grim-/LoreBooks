@@ -65,7 +65,7 @@ namespace LoreBooks
             {
                 if (_actionID == CustomAction.Key)
                 {
-                    __result = $"Open Book ({CustomAction.Value.TitlePageContent})";
+                    __result = $"Open Book";
                     return false;
                 }
             }
@@ -84,5 +84,24 @@ namespace LoreBooks
                 }, 3f);
             }
         }
+
+
+        //[HarmonyPatch(typeof(LocalCharacterControl), nameof(LocalCharacterControl.UpdateMenuInputs))]
+        //public static class LocalCharacterControlMenuCancelPatch
+        //{
+        //    static bool Prefix(LocalCharacterControl __instance)
+        //    {
+        //        UIBookPanel bookPanel = LoreBooksMod.Instance.GetBookManagerForCharacter(__instance.Character);
+
+        //        if (bookPanel.IsVisible)
+        //        {
+        //            LoreBooksMod.Log.LogMessage("BookPanel isnt null and is visible");
+        //            return false;
+        //        }
+
+        //        LoreBooksMod.Log.LogMessage("BookPanel is null and not visible");
+        //        return true;
+        //    }
+        //}
     }
 }

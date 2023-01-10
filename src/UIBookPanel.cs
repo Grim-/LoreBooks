@@ -35,6 +35,13 @@ namespace LoreBooks
         private LoreBook CurrentBook = null;
         private int CurrentPageIndex = 0;
 
+        public bool IsVisible
+        {
+            get
+            {
+                return IsShown;
+            }
+        }
         private bool IsShown = true;
         private bool IsPageTransitioning = false;
 
@@ -266,8 +273,9 @@ namespace LoreBooks
             {
                 CanvasGroup.alpha = 1;
                 CanvasGroup.interactable = true;
-                IsShown = true;
             }
+
+            IsShown = true;
         }
         public void Hide()
         {
@@ -275,8 +283,10 @@ namespace LoreBooks
             {
                 CanvasGroup.alpha = 0;
                 CanvasGroup.interactable = false;
-                IsShown = false;
+       
             }
+
+            IsShown = false;
         }
         public void ToggleShowHide()
         {
