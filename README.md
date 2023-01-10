@@ -1,6 +1,8 @@
 # LoreBooks
 LoreBooks adds a new UI Element and a simple interface to add longer length books to Outward, it was made as for the Unbound mod but you can use this mod for your own mod without requiring Unbound.
 
+### CSharp
+
 ```csharp
         //use start so its had to time to load
         public void Start()
@@ -26,6 +28,40 @@ LoreBooks adds a new UI Element and a simple interface to add longer length book
         }
 ```
 
+
+### XML
+
+Usage : 
+Create a folder called "LoreBooks" in your root mod folder, create an xml file inside the LoreBooks folder, like the below example.
+
+
+ItemID - The in-game created to allow the user to collect and open your book.
+BookUID - A Unique ID for your book, allowing you to reference it from c# if required.
+
+somefile.xml
+
+```xml
+<LoreBookDefinition>
+<ItemID>-2105</ItemID>
+<BookUID>some.uid.</BookUID>
+<BookTitle>XML Book Test</BookTitle>
+<BookTitlePageContent>BOdy Content</BookTitlePageContent>
+<Pages>
+  <PageContent>
+    <PageTitle>Page 1</PageTitle>
+    <TextContent>Page 1 text content</TextContent>
+  </PageContent>
+  <PageContent>
+    <PageTitle>Page 2</PageTitle>
+    <TextContent>Page 2 text content</TextContent>
+  </PageContent>
+  <PageContent>
+    <PageTitle>Page 3</PageTitle>
+    <TextContent>Page 3 text content</TextContent>
+  </PageContent>
+</Pages>
+</LoreBookDefinition>
+```
 
 
 ![bookthing_pagetransition](https://user-images.githubusercontent.com/3288858/211231030-fa669afb-a5bc-45ee-a512-f1a644e366b1.gif)
