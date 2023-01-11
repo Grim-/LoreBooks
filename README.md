@@ -143,10 +143,10 @@ You can also reference books once the OnBooksLoaded event has fired, allowing yo
         private void OnBookLoadingComplete()
         {
             //do things with the emonomicon
-            if (LoreBooksMod.Instance.HasLoreBook(-2905))
+            if (this.HasLoreBook(EmonomiconID))
             {
                 //get the book reference
-                LoreBook featureBook = LoreBooksMod.Instance.GetLoreBook(-2905);
+                LoreBook featureBook = this.GetLoreBook(EmonomiconID);
 
                 if (featureBook != null)
                 {
@@ -175,13 +175,23 @@ You can also reference books once the OnBooksLoaded event has fired, allowing yo
 
                     featureBook.OnInteractKeyPressed += (LoreBook LoreBook, int page, Character Character) =>
                     {
-                        Character.CharacterUI.NotificationPanel.ShowNotification("Interact key pressed!");
-
+                        //if on page 2
                         if (page == 2)
                         {
-                            Character.PlayVisualsVFX((int)SL_PlayVFX.VFXPrefabs.HexDoomVFX);
+                            LoreBook cached = LoreBook;
+                            Character.CharacterUI.NotificationPanel.ShowNotification("Interact key pressed!");
+
+                            //if page 3 doesn't exist
+                            if (!cached.HasPage(3))
+                            {
+                                Character.CharacterUI.NotificationPanel.ShowNotification("You unlocked the hidden page!");
+                                cached.AddOrUpdatePageContent(3, new PageContent(null, $"{Character.Name}", "You unlocked the hidden page!"));
+                                UIBookPanel bookPanel = LoreBooksMod.Instance.GetBookManagerForCharacter(Character);
+                                bookPanel.ChangeToPage(cached, 3);
+                            }
                         }
 
+      
                     };
 
                     featureBook.CanOpenPredicate += (Character Character, LoreBook LoreBook) =>
