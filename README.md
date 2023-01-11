@@ -193,4 +193,4 @@ You can also reference books once the OnBooksLoaded event has fired, allowing yo
 ```
 
 
-![bookthing_pagetransition](https://imgur.com/qSHfhI4)
+<blockquote class="imgur-embed-pub" lang="en" data-id="qSHfhI4" data-context="false" ><a href="//imgur.com/qSHfhI4"></a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>
