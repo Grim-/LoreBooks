@@ -16,7 +16,7 @@ BookUID - A Unique ID for your book, allowing you to reference it from c# if req
 
 ```xml
 <LoreBookDefinition>
-<ItemID>-2105</ItemID>
+<ItemID>-2905</ItemID>
 <BookUID>emonomicon</BookUID>
 <BookTitle>
 <![CDATA[
@@ -143,10 +143,10 @@ You can also reference books once the OnBooksLoaded event has fired, allowing yo
         private void OnBookLoadingComplete()
         {
             //do things with the emonomicon
-            if (this.HasLoreBook(-2105))
+            if (this.HasLoreBook(-2905))
             {
                 //get the book reference
-                LoreBook featureBook = this.GetLoreBook(-2105);
+                LoreBook featureBook = this.GetLoreBook(-2905);
 
                 if (featureBook != null)
                 {
