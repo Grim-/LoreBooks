@@ -86,22 +86,40 @@ namespace LoreBooks
         }
 
 
-        //[HarmonyPatch(typeof(LocalCharacterControl), nameof(LocalCharacterControl.UpdateMenuInputs))]
-        //public static class LocalCharacterControlMenuCancelPatch
-        //{
-        //    static bool Prefix(LocalCharacterControl __instance)
-        //    {
-        //        UIBookPanel bookPanel = LoreBooksMod.Instance.GetBookManagerForCharacter(__instance.Character);
+        [HarmonyPatch(typeof(LocalCharacterControl), nameof(LocalCharacterControl.UpdateMenuInputs))]
+        public static class LocalCharacterControlMenuCancelPatch
+        {
+            static bool Prefix(LocalCharacterControl __instance)
+            {
+                UIBookPanel bookPanel = LoreBooksMod.Instance.GetBookManagerForCharacter(__instance.Character);
 
-        //        if (bookPanel.IsVisible)
-        //        {
-        //            LoreBooksMod.Log.LogMessage("BookPanel isnt null and is visible");
-        //            return false;
-        //        }
+                if (bookPanel.IsVisible)
+                {
+                    //LoreBooksMod.Log.LogMessage("BookPanel isnt null and is visible");
+                    return false;
+                }
 
-        //        LoreBooksMod.Log.LogMessage("BookPanel is null and not visible");
-        //        return true;
-        //    }
-        //}
+                //LoreBooksMod.Log.LogMessage("BookPanel is null and not visible");
+                return true;
+            }
+        }
+
+        [HarmonyPatch(typeof(InventorySectionDisplay), nameof(InventorySectionDisplay.Update))]
+        public static class InventorySectionDisplayMenuCancelPatch
+        {
+            static bool Prefix(InventorySectionDisplay __instance)
+            {
+                UIBookPanel bookPanel = LoreBooksMod.Instance.GetBookManagerForCharacter(__instance.CharacterUI.TargetCharacter);
+
+                if (bookPanel.IsVisible)
+                {
+                    //LoreBooksMod.Log.LogMessage("BookPanel isnt null and is visible");
+                    return false;
+                }
+
+                //LoreBooksMod.Log.LogMessage("BookPanel is null and not visible");
+                return true;
+            }
+        }
     }
 }

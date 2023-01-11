@@ -12,7 +12,7 @@ namespace LoreBooks
     [DisallowMultipleComponent]
     public class UIBookPanel : MonoBehaviour
     {
-        public float PageTransitionSpeed = 1.4f;
+        public float PageTransitionSpeed = 2f;
 
         public Text TitleLabel;
         public Text ContentLabel;
@@ -209,16 +209,6 @@ namespace LoreBooks
         {
             if (Book.HasPage(pageIndex))
             {
-
-                //if (Book.GetPageContent(pageIndex).CanOpenPredicate != null)
-                //{
-
-                //    if (Book.GetPageContent(pageIndex).CanOpenPredicate?.Invoke(ParentCharacter, Book))
-                //    {
-
-                //    }
-                //}
-
                 PageContent pageContent = Book.GetPageContent(pageIndex);
 
                 if (pageContent != null)

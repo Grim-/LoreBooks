@@ -37,34 +37,6 @@ namespace LoreBooks
             OnBookOpened = onBookOpened;
         }
 
-
-        ///// <summary>
-        ///// Adds a new page and returns the index assigned to this page, returns -1 if it failed for some reason
-        ///// </summary>
-        ///// <param name="content"></param>
-        ///// <returns></returns>
-        //public int AddNewPage(PageContent content)
-        //{
-        //    LoreBooksMod.Log.LogMessage($"Adding NewPage Current Page Count {PageCount}");
-
-        //    if (PageCount == 0)
-        //    {
-        //        PagesContent.Add(0, content);
-        //        OnPageAdded?.Invoke(0, content);
-        //        LoreBooksMod.Log.LogMessage($"Adding NewPage NEW Page Count {PageCount}");
-        //        return 0;
-        //    }
-        //    else
-        //    {
-        //        int newCount = PageCount + 1;
-        //        PagesContent.Add(newCount, content);
-        //        OnPageAdded?.Invoke(newCount, content);
-        //        LoreBooksMod.Log.LogMessage($"Adding NewPage NEW Page Count {PageCount}");
-        //        return PageCount;
-        //    }
-        //}
-
-
         public void AddOrUpdatePageContent(int index, PageContent content)
         {
             if (!PagesContent.ContainsKey(index))

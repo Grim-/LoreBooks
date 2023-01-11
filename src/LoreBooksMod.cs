@@ -51,8 +51,49 @@ namespace LoreBooks
             UIScale = Config.Bind(NAME, $"{NAME} UI Scale", 0.75f, "UI Scaling?");
             Log.LogMessage($"{NAME} Loaded.");
 
+            OnBooksLoaded += OnBookLoadingComplete;
             SL.OnPacksLoaded += SL_OnPacksLoaded;
             new Harmony(GUID).PatchAll();
+        }
+
+        private void OnBookLoadingComplete()
+        {
+            //do things with the emonomicon
+
+            if (this.HasLoreBook(-2105))
+            {
+                LoreBook featureBook = this.GetLoreBook(-2105);
+
+                if (featureBook != null)
+                {
+                    featureBook.OnBookOpened += (Character Character) =>
+                    {
+                        Character.CharacterUI.ShowInfoNotification("Book opened");
+                    };
+
+                    featureBook.OnPageOpened += (Character Character, int index) =>
+                    {
+                        Character.CharacterUI.ShowInfoNotification($"Page {index} opened");
+
+                        if (index == 0)
+                        {
+                            Character.StatusEffectMngr.AddStatusEffect("Health Recovery 4");
+                        }
+                        if (index == 1)
+                        {
+                            Character.StatusEffectMngr.AddStatusEffect("Health Recovery 4");
+                        }
+                    };
+
+
+                    featureBook.CanOpenPredicate += (Character Character, LoreBook LoreBook) =>
+                    {
+                        //internalized lexicon
+                        return Character.Inventory.SkillKnowledge.IsItemLearned(8205170);
+                    };
+                }
+
+            }
         }
 
         private void SL_OnPacksLoaded()
@@ -63,45 +104,6 @@ namespace LoreBooks
         public void Start()
         {
             OnReady?.Invoke();
-
-
-
-            //OnBooksLoaded += () =>
-            //{
-            //    LoreBook featureBook = LoreBooksMod.Instance.StoredBooks[-2104];
-
-            //    featureBook.OnBookOpened += (Character Character) =>
-            //    {
-            //        Character.CharacterUI.ShowInfoNotification("Book opened");
-            //    };
-
-            //    featureBook.OnPageOpened += (Character Character, int index) =>
-            //    {
-            //        Character.CharacterUI.ShowInfoNotification($"Page {index} opened");
-
-            //        if (index == 0)
-            //        {
-            //            Character.StatusEffectMngr.AddStatusEffect("Health Recovery 4");
-            //        }
-            //        if (index == 1)
-            //        {
-            //            Character.StatusEffectMngr.AddStatusEffect("Health Recovery 4");
-            //        }
-            //    };
-
-
-            //    featureBook.CanOpenPredicate += (Character Character, LoreBook LoreBook) =>
-            //    {
-            //        //internalized lexicon
-            //        return Character.Inventory.SkillKnowledge.IsItemLearned(8205170);
-            //    };
-
-
-            //};
-
-            //featureBook.AddOrUpdatePageContent(0, new PageContent(null, "Page 1", "<color=red>You can color text with the  </color> "));
-            //featureBook.AddOrUpdatePageContent(1, new PageContent(null, "Page 2", "<color=green>PAGE TWO IS A PAGE OF HEALING</color>"));
-            //AddLoreBook(-2104, "FeatureTest", featureBook);
         }
         
 
@@ -114,8 +116,7 @@ namespace LoreBooks
 
                 if (HasFolder(Path))
                 {
-                    Log.LogMessage($"Found LoreBooks folder.");
-
+                    Log.LogMessage($"Found {LoreBookFolderName} folder at {directory}");
                     string[] filePaths = Directory.GetFiles(Path, "*.xml");
 
                     foreach (var item in filePaths)
@@ -125,7 +126,6 @@ namespace LoreBooks
                         if (bookDefinition != null)
                         {
                             LoreBook loreBook = new LoreBook(bookDefinition.BookUID, bookDefinition.BookTitle, bookDefinition.BookTitlePageContent, null, null);
-
                             loreBook.AddOrUpdatePageContent(0, new PageContent(null, bookDefinition.BookTitle, bookDefinition.BookTitlePageContent));
 
                             for (int i = 0; i < bookDefinition.Pages.Count; i++)
@@ -134,8 +134,6 @@ namespace LoreBooks
                                 loreBook.AddOrUpdatePageContent(IPlus, new PageContent(null, bookDefinition.Pages[i].PageTitle, bookDefinition.Pages[i].TextContent));
                             }
 
-
- 
                             LoreBooksMod.Instance.AddLoreBook(bookDefinition.ItemID, bookDefinition.BookUID, loreBook);
                         }
 
@@ -177,6 +175,19 @@ namespace LoreBooks
                 StoredBooks.Add(bookItemID, loreBook);
             }
             else StoredBooks[bookItemID] = loreBook;
+        }
+        public bool HasLoreBook(int bookItemID)
+        {
+           return StoredBooks.ContainsKey(bookItemID);
+        }
+        public LoreBook GetLoreBook(int bookItemID)
+        {
+            if (StoredBooks.ContainsKey(bookItemID))
+            {
+                return StoredBooks[bookItemID];
+            }
+
+            return null;
         }
 
         //Creates an instance of the BookUI for each Character, it is parented to the Characters.CharacterUI Canvas.
@@ -230,15 +241,7 @@ namespace LoreBooks
 
             return null;
         }
-        public LoreBook GetLoreBook(int bookItemID)
-        {
-            if (StoredBooks.ContainsKey(bookItemID))
-            {
-                return StoredBooks[bookItemID];
-            }
 
-            return null;
-        }
 
         #region Helpers
         public void DelayDo(Action OnAfterDelay, float DelayTime)
