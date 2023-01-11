@@ -1,9 +1,7 @@
 # LoreBooks
 LoreBooks adds a new UI Element and a simple interface to add longer length books to Outward, it was made as for the Unbound mod but you can use this mod for your own mod without requiring Unbound.
 
-
-![LoreBooksGitGif 1](https://github.com/Grim-/LoreBooks/blob/main/LoreBooksGitGif.gif)
-
+![LoreBooksGitGif 1]([https://media.giphy.com/media/vFKqnCdLPNOKc/giphy.gif](https://github.com/Grim-/LoreBooks/blob/main/LoreBooksGitGif.gif))
 
 ### XML - A Example LoreBookDefinition.
 
