@@ -11,7 +11,7 @@ Create a folder called "LoreBooks" in your root mod folder, create an xml file i
 ItemID - The in-game Item created to allow the user to collect and open your book, you can use SideLoader to create this. The ID would be whatever your custom Items ID is.
 BookUID - A Unique ID for your book, allowing you to reference it from c# if required.
 
--2105_Emonomicon.xml
+-2905_Emonomicon.xml
 
 ```xml
 <LoreBookDefinition>
