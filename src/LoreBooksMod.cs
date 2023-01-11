@@ -68,28 +68,41 @@ namespace LoreBooks
                 {
                     featureBook.OnBookOpened += (Character Character) =>
                     {
-                        Character.CharacterUI.ShowInfoNotification("Book opened");
+                        Character.CharacterUI.NotificationPanel.ShowNotification("Book opened");
                     };
 
                     featureBook.OnPageOpened += (Character Character, int index) =>
                     {
-                        Character.CharacterUI.ShowInfoNotification($"Page {index} opened");
-
-                        if (index == 0)
-                        {
-                            Character.StatusEffectMngr.AddStatusEffect("Health Recovery 4");
-                        }
                         if (index == 1)
                         {
-                            Character.StatusEffectMngr.AddStatusEffect("Health Recovery 4");
+                            Character.StatusEffectMngr.AddStatusEffect("Bleeding");
+                        }
+
+                        if (index == 2)
+                        {
+
+                            if (Character.StatusEffectMngr.HasStatusEffect("Bleeding"))
+                            {
+                                Character.StatusEffectMngr.RemoveStatusWithIdentifierName("Bleeding");
+                            }                         
                         }
                     };
 
 
+                    featureBook.OnInteractKeyPressed += (LoreBook LoreBook, int page, Character Character) =>
+                    {
+                        Character.CharacterUI.NotificationPanel.ShowNotification("Interact key pressed!");
+
+                        if (page == 2)
+                        {
+                            Character.PlayVisualsVFX((int)SL_PlayVFX.VFXPrefabs.HexDoomVFX);
+                        }
+
+                    };
+
                     featureBook.CanOpenPredicate += (Character Character, LoreBook LoreBook) =>
                     {
-                        //internalized lexicon
-                        return Character.Inventory.SkillKnowledge.IsItemLearned(8205170);
+                        return Character.Mana > 0;
                     };
                 }
 

@@ -27,6 +27,7 @@ namespace LoreBooks
         [XmlIgnoreAttribute]
         public Func<Character, LoreBook, bool> CanOpenPredicate;
 
+        public Action<LoreBook, int, Character> OnInteractKeyPressed;
 
         public int PageCount => PagesContent.Count;
         private Dictionary<int, PageContent> PagesContent = new Dictionary<int, PageContent>();

@@ -88,6 +88,14 @@ namespace LoreBooks
                     {
                         GoToNextPage();
                     }
+
+                    if (ControlsInput.MenuQuickAction(ParentCharacter.OwnerPlayerSys.PlayerID))
+                    {
+                        if (CurrentBook != null)
+                        {
+                            CurrentBook?.OnInteractKeyPressed?.Invoke(CurrentBook, CurrentPageIndex, ParentCharacter);
+                        }
+                    }
                 }
 
             }
@@ -178,6 +186,7 @@ namespace LoreBooks
             }
 
         }
+
 
         private void SetCurrentPageLabel(string CurrentPage)
         {

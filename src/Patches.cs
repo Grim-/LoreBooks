@@ -93,7 +93,7 @@ namespace LoreBooks
             {
                 UIBookPanel bookPanel = LoreBooksMod.Instance.GetBookManagerForCharacter(__instance.Character);
 
-                if (bookPanel.IsVisible)
+                if (bookPanel != null && bookPanel.IsVisible)
                 {
                     //LoreBooksMod.Log.LogMessage("BookPanel isnt null and is visible");
                     return false;
@@ -109,9 +109,14 @@ namespace LoreBooks
         {
             static bool Prefix(InventorySectionDisplay __instance)
             {
+                if (__instance == null)
+                {
+                    return true;
+                }
+
                 UIBookPanel bookPanel = LoreBooksMod.Instance.GetBookManagerForCharacter(__instance.CharacterUI.TargetCharacter);
 
-                if (bookPanel.IsVisible)
+                if (bookPanel != null && bookPanel.IsVisible)
                 {
                     //LoreBooksMod.Log.LogMessage("BookPanel isnt null and is visible");
                     return false;
