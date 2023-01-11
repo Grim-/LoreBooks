@@ -24,6 +24,7 @@ namespace LoreBooks
         public const string NAME = "LoreBooks";
         public const string VERSION = "1.0.0";
         public const string LoreBookFolderName = "LoreBooks";
+        public static int EmonomiconID = -2905;
 
 
         internal static ManualLogSource Log;
@@ -51,7 +52,10 @@ namespace LoreBooks
             UIScale = Config.Bind(NAME, $"{NAME} UI Scale", 0.75f, "UI Scaling?");
             Log.LogMessage($"{NAME} Loaded.");
 
+
+            //this is called after all book definitions are loaded, so you can reference the book and register to c# events
             OnBooksLoaded += OnBookLoadingComplete;
+
             SL.OnPacksLoaded += SL_OnPacksLoaded;
             new Harmony(GUID).PatchAll();
         }
@@ -59,10 +63,10 @@ namespace LoreBooks
         private void OnBookLoadingComplete()
         {
             //do things with the emonomicon
-
-            if (this.HasLoreBook(-2105))
+            if (this.HasLoreBook(EmonomiconID))
             {
-                LoreBook featureBook = this.GetLoreBook(-2105);
+                //get the book reference
+                LoreBook featureBook = this.GetLoreBook(EmonomiconID);
 
                 if (featureBook != null)
                 {
@@ -91,13 +95,23 @@ namespace LoreBooks
 
                     featureBook.OnInteractKeyPressed += (LoreBook LoreBook, int page, Character Character) =>
                     {
-                        Character.CharacterUI.NotificationPanel.ShowNotification("Interact key pressed!");
-
+                        //if on page 2
                         if (page == 2)
                         {
-                            Character.PlayVisualsVFX((int)SL_PlayVFX.VFXPrefabs.HexDoomVFX);
+                            LoreBook cached = LoreBook;
+                            Character.CharacterUI.NotificationPanel.ShowNotification("Interact key pressed!");
+
+                            //if page 3 doesn't exist
+                            if (!cached.HasPage(3))
+                            {
+                                Character.CharacterUI.NotificationPanel.ShowNotification("You unlocked the hidden page!");
+                                cached.AddOrUpdatePageContent(3, new PageContent(null, $"{Character.Name}", "You unlocked the hidden page!"));
+                                UIBookPanel bookPanel = LoreBooksMod.Instance.GetBookManagerForCharacter(Character);
+                                bookPanel.ChangeToPage(cached, 3);
+                            }
                         }
 
+      
                     };
 
                     featureBook.CanOpenPredicate += (Character Character, LoreBook LoreBook) =>
@@ -119,7 +133,6 @@ namespace LoreBooks
             OnReady?.Invoke();
         }
         
-
         private void FindXMLDefinitions()
         {
             string[] directoriesInPluginsFolder = Directory.GetDirectories(Paths.PluginPath);
