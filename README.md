@@ -143,10 +143,10 @@ You can also reference books once the OnBooksLoaded event has fired, allowing yo
         private void OnBookLoadingComplete()
         {
             //do things with the emonomicon
-            if (this.HasLoreBook(-2905))
+            if (LoreBooksMod.Instance.HasLoreBook(-2905))
             {
                 //get the book reference
-                LoreBook featureBook = this.GetLoreBook(-2905);
+                LoreBook featureBook = LoreBooksMod.Instance.GetLoreBook(-2905);
 
                 if (featureBook != null)
                 {
