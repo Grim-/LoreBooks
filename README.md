@@ -55,9 +55,16 @@ You can also press the default "Use" key (Space on PC) with certain books! Try i
 </LoreBookDefinition>
 ```
 
-If you want to use rich text formatting (<color=green>Text</color> <b>BOLD></b> etc you need to escape the entire text with 
+If you want to use rich text formatting (<color=green>Text</color> <b>BOLD></b> etc you need to escape the entire text with...
 
-such as in the above example 
+```xml
+<![CDATA[
+```
+then close it with 
+```xml
+]]>
+```
+As shown in the example.
 
 ```xml
     <TextContent>
@@ -69,6 +76,120 @@ such as in the above example
 You can also press the default "Use" key (Space on PC) with certain books! Try it on this page.
 ]]>
    </TextContent>
+```
+
+
+# CSharp
+You can also Define LoreBooks via code
+
+```csharp
+        //your mods Awake method
+        internal void Awake()
+        {
+            Log = this.Logger;
+            Log.LogMessage($"{NAME} Loaded.");
+
+
+            //register to the mods on ready event, you can add books once this is called
+            LoreBooksMod.Instance.OnReady += OnReadyEvent;
+            //this is called after all book definitions are loaded, so you can reference the book and register to c# events
+            //LoreBooksMod.Instance.OnBooksLoaded += OnBookLoadingComplete;
+        }
+
+        private void OnReadyEvent()
+        {
+            //mod is ready to add books
+            DefineABook();
+        }
+
+        private void DefineABook()
+        {
+            //an image loaded elsewhere
+            Sprite SomeHeaderImageForTitle = null;
+
+            LoreBook Newbook = new LoreBook("SOMEGUID", "SOME TITLE", "SOME TITLE PAGE CONTENT", SomeHeaderImageForTitle, null);
+
+            //an image loaded elsewhere
+            Sprite SomeHeaderImageForPage = null;
+
+            //first (0) is always Title page
+            Newbook.AddOrUpdatePageContent(0, new PageContent(SomeHeaderImageForPage, "SOME TITLE", "SOME TITLE PAGE CONTENT"));
+
+            //add another
+            Newbook.AddOrUpdatePageContent(1, new PageContent(SomeHeaderImageForPage, "SOME TITLE PAGE 1", "SOME TITLE PAGE 1"));
+
+            //add the book to the main mod so it can be shown on the BookUI
+            //itemID, BookUID, LoreBook
+            LoreBooksMod.Instance.AddLoreBook(-9999, "SOMEGUID", Newbook);
+        }
+```
+
+
+You can also reference books once the OnBooksLoaded event has fired, allowing you to react to certain events. The Emonomicon (ItemID -2105) contains an example of each of the features, spawn it in and read it to learn a bit more otherwise here is a c# example of that same book.
+
+
+```csharp
+        internal void Awake()
+        {
+            //this is called after all book definitions are loaded, so you can reference the book and register to c# events
+            LoreBooksMod.Instance.OnBooksLoaded += OnBookLoadingComplete;
+
+            //SL.OnPacksLoaded += SL_OnPacksLoaded;
+            //new Harmony(GUID).PatchAll();
+        }
+
+        private void OnBookLoadingComplete()
+        {
+            //do things with the emonomicon
+            if (this.HasLoreBook(-2105))
+            {
+                //get the book reference
+                LoreBook featureBook = this.GetLoreBook(-2105);
+
+                if (featureBook != null)
+                {
+                    featureBook.OnBookOpened += (Character Character) =>
+                    {
+                        Character.CharacterUI.NotificationPanel.ShowNotification("Book opened");
+                    };
+
+                    featureBook.OnPageOpened += (Character Character, int index) =>
+                    {
+                        if (index == 1)
+                        {
+                            Character.StatusEffectMngr.AddStatusEffect("Bleeding");
+                        }
+
+                        if (index == 2)
+                        {
+
+                            if (Character.StatusEffectMngr.HasStatusEffect("Bleeding"))
+                            {
+                                Character.StatusEffectMngr.RemoveStatusWithIdentifierName("Bleeding");
+                            }                         
+                        }
+                    };
+
+
+                    featureBook.OnInteractKeyPressed += (LoreBook LoreBook, int page, Character Character) =>
+                    {
+                        Character.CharacterUI.NotificationPanel.ShowNotification("Interact key pressed!");
+
+                        if (page == 2)
+                        {
+                            Character.PlayVisualsVFX((int)SL_PlayVFX.VFXPrefabs.HexDoomVFX);
+                        }
+
+                    };
+
+                    featureBook.CanOpenPredicate += (Character Character, LoreBook LoreBook) =>
+                    {
+                        return Character.Mana > 0;
+                    };
+                }
+
+            }
+        }
 ```
 
 
