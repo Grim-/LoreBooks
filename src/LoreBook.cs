@@ -24,6 +24,10 @@ namespace LoreBooks
         [XmlIgnoreAttribute]
         public Action<int, PageContent> OnPageRemoved;
 
+        public bool UseVisual = false;
+        public Color VisualColor = Color.cyan;
+
+
         [XmlIgnoreAttribute]
         public Func<Character, LoreBook, bool> CanOpenPredicate;
 

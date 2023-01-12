@@ -1,10 +1,10 @@
 <LoreBookDefinition>
 <ItemID>-2906</ItemID>
 <BookUID>trueflame.harmattan</BookUID>
-<BookTitle>
-Old Harmattan, The Antique Plateau
-</BookTitle>
+<UseVisual>false</UseVisual>
+<BookTitle>Old Harmattan, The Antique Plateau</BookTitle>
 <BookTitlePageContent>
+TrueFlame OC
 </BookTitlePageContent>
 <Pages>
 

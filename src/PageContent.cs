@@ -14,6 +14,9 @@ namespace LoreBooks
         public Sprite HeaderImage = null;
         public string PageTitle = string.Empty;
         public string TextContent = string.Empty;
+        public bool IsButtonPage = false;
+
+        public List<ButtonPageContent> Buttons = new List<ButtonPageContent>();
 
         [XmlIgnore]
         public Func<Character, LoreBook, bool> CanOpenPredicate;
@@ -29,6 +32,36 @@ namespace LoreBooks
             PageTitle = pageTitle;
             TextContent = textContent;
         }
+
+
+        public void AddButton(string buttonLabel, Action<Character> OnButtonPress)
+        {
+            if (Buttons.Find(x=> x.ButtonText == buttonLabel) == null)
+            {
+                Buttons.Add(new ButtonPageContent(buttonLabel, OnButtonPress));
+            }
+
+        }
+    }
+
+    [System.Serializable]
+    public class ButtonPageContent
+    {
+        public string ButtonText = string.Empty;
+        [XmlIgnore]
+        public Action<Character> ButtonAction;
+
+        public ButtonPageContent()
+        {
+
+        }
+
+        public ButtonPageContent(string buttonText, Action<Character> buttonAction)
+        {
+            ButtonText = buttonText;
+            ButtonAction = buttonAction;
+        }
+
     }
 
 }

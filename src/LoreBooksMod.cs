@@ -2,6 +2,7 @@
 using BepInEx.Bootstrap;
 using BepInEx.Configuration;
 using BepInEx.Logging;
+using Betwixt;
 using HarmonyLib;
 using SideLoader;
 using System;
@@ -13,6 +14,7 @@ using System.Text;
 using System.Xml.Serialization;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace LoreBooks
 {
@@ -27,10 +29,13 @@ namespace LoreBooks
         public static int EmonomiconID = -2905;
 
 
+        public static GameObject BookButtonPrefab;
+
         internal static ManualLogSource Log;
         public static LoreBooksMod Instance;
 
         public static ConfigEntry<float> UIScale;
+        public static ConfigEntry<float> PageTransitionSpeed;
         public static ConfigEntry<float> LineSpacing;
         public static ConfigEntry<int> FontMinSize;
         public static ConfigEntry<int> FontMaxSize;
@@ -58,6 +63,7 @@ namespace LoreBooks
 
 
             UIScale = Config.Bind(NAME, $"{NAME} UI Scale", 0.75f, "UI Scaling?");
+            PageTransitionSpeed = Config.Bind(NAME, $"{NAME} Page Transition Speed", 1.6f, "Page Transition Speed");
             LineSpacing = Config.Bind(NAME, $"{NAME} Line Spacing", 0.75f, "Line Spacing");
 
             FontMinSize = Config.Bind(NAME, $"{NAME} Font mininmum size", 24, "Font Autoscaling minimum.");
@@ -85,6 +91,7 @@ namespace LoreBooks
                 //get the book reference
                 LoreBook featureBook = this.GetLoreBook(EmonomiconID);
 
+
                 if (featureBook != null)
                 {
                     featureBook.OnBookOpened += (Character Character) =>
@@ -101,7 +108,6 @@ namespace LoreBooks
 
                         if (index == 2)
                         {
-
                             if (Character.StatusEffectMngr.HasStatusEffect("Bleeding"))
                             {
                                 Character.StatusEffectMngr.RemoveStatusWithIdentifierName("Bleeding");
@@ -121,10 +127,46 @@ namespace LoreBooks
                             //if page 3 doesn't exist
                             if (!cached.HasPage(3))
                             {
-                                Character.CharacterUI.NotificationPanel.ShowNotification("You unlocked the hidden page!");
-                                cached.AddOrUpdatePageContent(3, new PageContent(null, $"{Character.Name}", "You unlocked the hidden page!"));
                                 UIBookPanel bookPanel = LoreBooksMod.Instance.GetBookManagerForCharacter(Character);
+                                bookPanel.ShowEffect();
+                                Character.CharacterUI.NotificationPanel.ShowNotification("You unlocked the hidden page!");
+
+                                PageContent pagContent = new PageContent(null, $"{Character.Name}", "You unlocked the hidden page!");
+
+
+                                pagContent.IsButtonPage = true;
+
+                                pagContent.AddButton("Mini Teleport", (Character Character) =>
+                                {
+                                    Character.Teleport(Character.transform.position + Character.transform.forward * 2f, Character.transform.rotation);
+
+                                });
+
+                                pagContent.AddButton("Teleport to Harmattan", (Character Character) =>
+                                {
+                                    StartCoroutine(TeleportToArea(Character, bookPanel, AreaManager.AreaEnum.Harmattan));                                
+                                });
+
+                                pagContent.AddButton("Teleport to Cierzo", (Character Character) =>
+                                {
+                                    StartCoroutine(TeleportToArea(Character, bookPanel, AreaManager.AreaEnum.CierzoOutside));
+                                });
+
+                                pagContent.AddButton("Teleport to Berg", (Character Character) =>
+                                {
+                                    StartCoroutine(TeleportToArea(Character, bookPanel, AreaManager.AreaEnum.Berg));
+                                });
+
+                                pagContent.AddButton("Teleport to Monsoon", (Character Character) =>
+                                {
+                                    StartCoroutine(TeleportToArea(Character, bookPanel, AreaManager.AreaEnum.Monsoon));
+                                });
+
+                                cached.AddOrUpdatePageContent(3, pagContent);
                                 bookPanel.ChangeToPage(cached, 3);
+
+
+
                             }
                         }
 
@@ -145,12 +187,43 @@ namespace LoreBooks
                     };
                 }
 
+
             }
+        }
+
+
+        private IEnumerator TeleportToArea(Character Character, UIBookPanel bookPanel, AreaManager.AreaEnum Area)
+        {
+            if (!Character.InLocomotion || !Character.NextIsLocomotion || Character.PreparingToSleep)
+            {
+                yield break;
+            }
+
+            if (Character && Character.IsLocalPlayer)
+            {
+                //yield return bookPanel.FadeEffect(0, 1, 1f);
+
+                yield return new WaitForSeconds(1f);
+
+                Area target = AreaManager.Instance.GetArea(Area);
+
+                if (target != null)
+                {
+                    bookPanel.Hide();
+                    //yield return bookPanel.FadeEffect(1, 0, 0.001f);
+
+                    CharacterManager.Instance.RequestAreaSwitch(Character, target, 0, 0, 0, "");
+                }
+            }
+
+            yield break;
         }
 
         private void SL_OnPacksLoaded()
         {
+            BookButtonPrefab = OutwardHelpers.GetFromAssetBundle<GameObject>("lorebooks", "lorebookui", "UIBookButton");
             FindXMLDefinitions();
+
         }
 
         public void Start()
@@ -177,6 +250,10 @@ namespace LoreBooks
                         if (bookDefinition != null)
                         {
                             LoreBook loreBook = new LoreBook(bookDefinition.BookUID, bookDefinition.BookTitle, bookDefinition.BookTitlePageContent, null, null);
+                            //LoreBooksMod.Log.LogMessage("COLOR : " + bookDefinition.VisualColor);
+                            loreBook.VisualColor = new Color32(((byte)bookDefinition.VisualColor.r), ((byte)bookDefinition.VisualColor.g), ((byte)bookDefinition.VisualColor.b), ((byte)bookDefinition.VisualColor.a));
+                            loreBook.UseVisual = bookDefinition.UseVisual;
+
                             loreBook.AddOrUpdatePageContent(0, new PageContent(null, bookDefinition.BookTitle, bookDefinition.BookTitlePageContent));
 
                             for (int i = 0; i < bookDefinition.Pages.Count; i++)
@@ -263,6 +340,7 @@ namespace LoreBooks
                         UIBookManager.SetContentFontColor(TextColor.Value);
                         UIBookManager.SetContentAlignment(TextAlignment.Value);
                         UIBookManager.SetLineSpace(LineSpacing.Value);
+                        UIBookManager.PageTransitionSpeed = PageTransitionSpeed.Value;
 
                         //usual outward problems, need to delay it give it time to find references
                         DelayDo(() =>

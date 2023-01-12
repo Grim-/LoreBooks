@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Betwixt;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,8 @@ namespace LoreBooks
     {
         public float PageTransitionSpeed = 2f;
 
+
+        public Image Background;
         public Text TitleLabel;
         public Text ContentLabel;
         public Text CurrentPageLabel;
@@ -25,6 +28,11 @@ namespace LoreBooks
         public Button PrevButton;
         public Button CloseButton;
 
+        public GameObject ButtonContainer;
+        public GameObject TextContainer;
+        
+        
+
         public CanvasGroup CanvasGroup => GetComponent<CanvasGroup>();
         //again cant use editor set references, I will cache it if it becomes a problem, 
         //but anyone opening enough books per frame to see the results of that problem, have another problem entirely.
@@ -33,6 +41,7 @@ namespace LoreBooks
 
         private LoreBook CurrentBook = null;
         private int CurrentPageIndex = 0;
+        private List<GameObject> Buttons = new List<GameObject>();
 
         public bool IsVisible
         {
@@ -44,8 +53,11 @@ namespace LoreBooks
         private bool IsShown = true;
         private bool IsPageTransitioning = false;
 
-
         public List<object> PlayerVariables = new List<object>();
+
+
+        private Coroutine TransitionRoutine;
+
 
         private void Awake()
         {
@@ -126,6 +138,7 @@ namespace LoreBooks
         private void FindUIReferences()
         {
             HeaderImage = transform.Find("Panel/Scroll View/Image").gameObject.GetComponent<Image>();
+            Background = GetComponent<Image>();
 
             TitleLabel = transform.Find("Panel/Title").gameObject.GetComponent<Text>();
             TitleLabel.verticalOverflow = VerticalWrapMode.Overflow;
@@ -149,6 +162,9 @@ namespace LoreBooks
             }
 
 
+            ButtonContainer = transform.Find("Panel/ButtonList").gameObject;
+            TextContainer = transform.Find("Panel/Scroll View/Viewport/Content").gameObject;
+
             CurrentPageLabel = transform.Find("CurrentPageLabel").gameObject.GetComponent<Text>();
 
             ContentLabel = transform.Find("Panel/Scroll View/Viewport/Content").gameObject.GetComponent<Text>();
@@ -164,6 +180,23 @@ namespace LoreBooks
                     if (!IsShown)
                     {
                         Show();
+                    }
+
+                    if (loreBook.UseVisual)
+                    {
+                        //this is just for now, I need to move it 
+
+                        if (Background!= null)
+                        {
+                            Background.material.SetFloat("_NoiseScrollY", 0.014f);
+                        }
+
+                        SetEffectColor(loreBook.VisualColor);
+                        ShowEffect();
+                    }
+                    else
+                    {
+                        HideEffect();
                     }
 
                     SetCurrentLoreBook(loreBook);
@@ -241,9 +274,14 @@ namespace LoreBooks
 
         public void ChangeToPage(LoreBook Book, int pageIndex)
         {
-            if (!IsPageTransitioning && Book.HasPage(pageIndex))
+            if (IsPageTransitioning)
             {
-               StartCoroutine(FadePage(Book, pageIndex));
+                StopCoroutine(TransitionRoutine);
+            }
+
+            if (Book.HasPage(pageIndex))
+            {
+                TransitionRoutine = StartCoroutine(FadePage(Book, pageIndex));
             }
 
         }
@@ -304,12 +342,54 @@ namespace LoreBooks
                     }
 
 
-                    SetTextContent(CurrentPageContent.TextContent);
-
-                    if (CurrentPageContent.HeaderImage != null)
+                    if (pageContent.IsButtonPage)
                     {
-                        SetHeaderImage(CurrentPageContent.HeaderImage);
+                        TextContainer.gameObject.SetActive(false);
+                        ButtonContainer.gameObject.SetActive(true);
+
+
+                        if (Buttons.Count > 0)
+                        {
+                            foreach (var button in Buttons)
+                            {
+                                Destroy(button.gameObject);
+                            }
+
+                            Buttons.Clear();
+                        }
+
+                        foreach (var button in pageContent.Buttons)
+                        {
+                            GameObject tmp = Instantiate(LoreBooksMod.BookButtonPrefab);
+                            Button but = tmp.GetComponent<Button>();
+                            Text buttonText = tmp.GetComponentInChildren<Text>();
+                            buttonText.text = button.ButtonText;
+
+                            but.onClick.AddListener(() =>
+                            {
+                                button.ButtonAction?.Invoke(ParentCharacter);
+                            });
+
+                            ((RectTransform)tmp.transform).SetParent(ButtonContainer.transform, false);
+                            Buttons.Add(tmp);
+                        }
+
                     }
+                    else
+                    {
+                        TextContainer.gameObject.SetActive(true);
+                        ButtonContainer.gameObject.SetActive(false);
+
+                        SetTextContent(CurrentPageContent.TextContent);
+
+                        if (CurrentPageContent.HeaderImage != null)
+                        {
+                            SetHeaderImage(CurrentPageContent.HeaderImage);
+                        }
+                    }
+
+
+
 
                     Book.OnPageOpened?.Invoke(ParentCharacter, pageIndex);
                     SetCurrentPageIndex(pageIndex);
@@ -372,7 +452,6 @@ namespace LoreBooks
             {
                 CanvasGroup.alpha = 0;
                 CanvasGroup.interactable = false;
-       
             }
 
             IsShown = false;
@@ -459,6 +538,32 @@ namespace LoreBooks
         public virtual bool CanCharacterOpenBook(LoreBook LoreBook, Character Character)
         {
             return true;
+        }
+
+
+        public void ShowEffect()
+        {
+            if (Background != null)
+            {
+                Background.material.SetFloat("_ShowEffect", 1);
+            }
+
+        }
+        public void SetEffectColor(Color color)
+        {
+            if (Background != null)
+            {
+                Background.material.SetColor("_EffectTint", color);
+            }
+        }
+        public void HideEffect()
+        {
+            if (Background != null)
+            {
+                Background.material.SetFloat("_ShowEffect", 0);
+            }
+
+   
         }
     }
 }
