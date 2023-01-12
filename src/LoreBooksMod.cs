@@ -31,6 +31,12 @@ namespace LoreBooks
         public static LoreBooksMod Instance;
 
         public static ConfigEntry<float> UIScale;
+        public static ConfigEntry<float> LineSpacing;
+        public static ConfigEntry<int> FontMinSize;
+        public static ConfigEntry<int> FontMaxSize;
+        public static ConfigEntry<Color> TextColor;
+        public static ConfigEntry<TextAnchor> TextAlignment;
+
         private GameObject UIPrefab => GetFromAssetBundle<GameObject>("lorebooks", "lorebookui", "UIBookPanel");
 
         private Dictionary<Character, UIBookPanel> UIBookInstances = new Dictionary<Character, UIBookPanel>();
@@ -49,7 +55,18 @@ namespace LoreBooks
         {
             Log = this.Logger;
             Instance = this;
+
+
             UIScale = Config.Bind(NAME, $"{NAME} UI Scale", 0.75f, "UI Scaling?");
+            LineSpacing = Config.Bind(NAME, $"{NAME} Line Spacing", 0.75f, "Line Spacing");
+
+            FontMinSize = Config.Bind(NAME, $"{NAME} Font mininmum size", 24, "Font Autoscaling minimum.");
+            FontMaxSize = Config.Bind(NAME, $"{NAME} Font Maximum size", 30, "Font Autoscaling maximum.");
+
+            TextColor = Config.Bind(NAME, $"{NAME} Font Color", new Color(0f, 0f, 0f) , "Font Color");
+            TextAlignment = Config.Bind(NAME, $"{NAME} Font alignment", TextAnchor.UpperLeft, "Font alignment");
+
+
             Log.LogMessage($"{NAME} Loaded.");
 
 
@@ -116,7 +133,15 @@ namespace LoreBooks
 
                     featureBook.CanOpenPredicate += (Character Character, LoreBook LoreBook) =>
                     {
-                        return Character.Mana > 0;
+
+                        if (Character.Mana <= 0)
+                        {
+                            Character.CharacterUI.NotificationPanel.ShowNotification("You cannot open the Emonomicon without a deeper understanding of magic, you plebian.");
+                            Character.StatusEffectMngr.AddStatusEffect("Doomed");
+                            return false;
+                        }
+
+                        return true;
                     };
                 }
 
@@ -231,7 +256,13 @@ namespace LoreBooks
                         UIRect.SetParent(Character.CharacterUI.transform, false);
                         UIBookPanel UIBookManager = UIInstance.AddComponent<UIBookPanel>();
                         UIBookManager.SetParentCharacter(Character);
+
                         UIRect.localScale = new Vector3(LoreBooksMod.UIScale.Value, LoreBooksMod.UIScale.Value, LoreBooksMod.UIScale.Value);
+                        UIBookManager.SetContentFontAutoSize(FontMinSize.Value, FontMaxSize.Value);
+                        UIBookManager.SetTitleFontAutoSize(24, 35);
+                        UIBookManager.SetContentFontColor(TextColor.Value);
+                        UIBookManager.SetContentAlignment(TextAlignment.Value);
+                        UIBookManager.SetLineSpace(LineSpacing.Value);
 
                         //usual outward problems, need to delay it give it time to find references
                         DelayDo(() =>

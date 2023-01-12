@@ -43,6 +43,9 @@ namespace LoreBooks
         private bool IsShown = true;
         private bool IsPageTransitioning = false;
 
+
+        public object[] PlayerVariables = new object[5];
+
         private void Awake()
         {
             FindUIReferences();
@@ -51,6 +54,7 @@ namespace LoreBooks
         public void Start()
         {
             Font Philsopher = Resources.FindObjectsOfTypeAll<Font>().First(it => it.name.Contains("Philosopher"));
+
 
             if (Philsopher != null)
             {
@@ -63,8 +67,20 @@ namespace LoreBooks
         public void SetParentCharacter(Character Character)
         {
             ParentCharacter = Character;
+
+            UpdatePlayerVariables(Character);
+
         }
 
+
+        private void UpdatePlayerVariables(Character Character)
+        {
+            PlayerVariables[0] = Character.Name;
+            PlayerVariables[1] = Character.PlayerStats.CurrentHealth;
+            PlayerVariables[2] = Character.PlayerStats.MaxHealth;
+            PlayerVariables[3] = Character.PlayerStats.CurrentStamina;
+            PlayerVariables[4] = Character.PlayerStats.MaxStamina;
+        }
 
         private void Update()
         {
@@ -108,6 +124,7 @@ namespace LoreBooks
             HeaderImage = transform.Find("Panel/Scroll View/Image").gameObject.GetComponent<Image>();
 
             TitleLabel = transform.Find("Panel/Title").gameObject.GetComponent<Text>();
+            TitleLabel.verticalOverflow = VerticalWrapMode.Overflow;
 
             NextButton = transform.Find("NextPage").gameObject.GetComponent<Button>();
             NextPageLabel = transform.Find("NextPageLabel").gameObject.GetComponent<Text>();
@@ -170,6 +187,18 @@ namespace LoreBooks
                 TitleLabel.font = Font;
             }
         }
+
+        public void SetTitleFontAutoSize(int minSize, int maxSize)
+        {
+            if (TitleLabel != null)
+            {
+                TitleLabel.resizeTextForBestFit = true;
+                TitleLabel.resizeTextMinSize = minSize;
+                TitleLabel.resizeTextMaxSize = maxSize;
+            }
+        }
+
+
         public void SetContentFont(Font Font)
         {
             if (ContentLabel != null && Font != null)
@@ -178,6 +207,34 @@ namespace LoreBooks
             }
         }
 
+        public void SetContentFontAutoSize(int minSize, int maxSize)
+        {
+            if (ContentLabel != null)
+            {
+                ContentLabel.resizeTextForBestFit = true;
+                ContentLabel.resizeTextMinSize = minSize;
+                ContentLabel.resizeTextMaxSize = maxSize;
+            }
+        }
+
+        public void SetContentFontColor(Color color)
+        {
+            if (ContentLabel != null)
+            {
+                ContentLabel.color = color;
+            }
+        }
+
+        public void SetContentAlignment(TextAnchor textAlignment)
+        {
+            if (ContentLabel != null)
+            {
+                ContentLabel.alignment = textAlignment;
+            }
+        }
+
+
+
         public void ChangeToPage(LoreBook Book, int pageIndex)
         {
             if (!IsPageTransitioning && Book.HasPage(pageIndex))
@@ -185,6 +242,14 @@ namespace LoreBooks
                StartCoroutine(FadePage(Book, pageIndex));
             }
 
+        }
+
+        public void SetLineSpace(float spacing)
+        {
+            if (ContentLabel != null)
+            {
+                ContentLabel.lineSpacing = spacing;
+            }
         }
 
 
@@ -359,14 +424,16 @@ namespace LoreBooks
         {
             if (TitleLabel != null)
             {
-                TitleLabel.text = content;
+                UpdatePlayerVariables(ParentCharacter);
+                TitleLabel.text = string.Format(content, PlayerVariables);
             }
         }
         private void SetTextContent(string content)
         {
             if (ContentLabel != null)
             {
-                ContentLabel.text = content;
+                UpdatePlayerVariables(ParentCharacter);
+                ContentLabel.text = string.Format(content, PlayerVariables);
             }
         }
 

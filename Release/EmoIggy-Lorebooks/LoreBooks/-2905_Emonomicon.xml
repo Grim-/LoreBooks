@@ -3,7 +3,7 @@
 <BookUID>emonomicon</BookUID>
 <BookTitle>
 <![CDATA[
-<size=100>Emonomicon</size>
+Emonomicon
 ]]>
 </BookTitle>
 <BookTitlePageContent>
@@ -11,6 +11,11 @@
   <color=red>
   This book contains information on the features available to modders.
   </color>
+  NAME {0}
+  CURRENT HP {1} 
+  MAX HP{2} 
+  CURRENT STAMINA{3} 
+  MAX STAMINA {4} 
 ]]>
 </BookTitlePageContent>
 <Pages>
