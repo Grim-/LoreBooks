@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace LoreBooks
@@ -44,7 +45,7 @@ namespace LoreBooks
         private bool IsPageTransitioning = false;
 
 
-        public object[] PlayerVariables = new object[5];
+        public List<object> PlayerVariables = new List<object>();
 
         private void Awake()
         {
@@ -69,17 +70,20 @@ namespace LoreBooks
             ParentCharacter = Character;
 
             UpdatePlayerVariables(Character);
-
         }
 
 
         private void UpdatePlayerVariables(Character Character)
         {
-            PlayerVariables[0] = Character.Name;
-            PlayerVariables[1] = Character.PlayerStats.CurrentHealth;
-            PlayerVariables[2] = Character.PlayerStats.MaxHealth;
-            PlayerVariables[3] = Character.PlayerStats.CurrentStamina;
-            PlayerVariables[4] = Character.PlayerStats.MaxStamina;
+            PlayerVariables.Clear();
+
+
+            PlayerVariables.Add(Character.Name);
+            PlayerVariables.Add(Character.PlayerStats.CurrentHealth);
+            PlayerVariables.Add(Character.PlayerStats.MaxHealth);
+            PlayerVariables.Add(Character.PlayerStats.CurrentStamina);
+            PlayerVariables.Add(Character.PlayerStats.MaxStamina);
+            PlayerVariables.Add(OutwardHelpers.GetActiveRegionFromSceneName(SceneManager.GetActiveScene().name));
         }
 
         private void Update()
@@ -425,7 +429,7 @@ namespace LoreBooks
             if (TitleLabel != null)
             {
                 UpdatePlayerVariables(ParentCharacter);
-                TitleLabel.text = string.Format(content, PlayerVariables);
+                TitleLabel.text = string.Format(content, PlayerVariables.ToArray());
             }
         }
         private void SetTextContent(string content)
@@ -433,7 +437,7 @@ namespace LoreBooks
             if (ContentLabel != null)
             {
                 UpdatePlayerVariables(ParentCharacter);
-                ContentLabel.text = string.Format(content, PlayerVariables);
+                ContentLabel.text = string.Format(content, PlayerVariables.ToArray());
             }
         }
 
