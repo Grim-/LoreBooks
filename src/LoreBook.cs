@@ -1,4 +1,5 @@
 ﻿using BepInEx.Configuration;
+using SideLoader;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,10 @@ namespace LoreBooks
     public class LoreBook
     {
         public string BookUID;
+
+
+        public List<SL_Effect> EffectsOnOpen = new List<SL_Effect>();
+
 
         [XmlIgnoreAttribute]
         public Action<Character> OnBookOpened;

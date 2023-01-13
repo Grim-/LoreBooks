@@ -1,4 +1,4 @@
-﻿using Betwixt;
+﻿using SideLoader;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -188,7 +188,7 @@ namespace LoreBooks
 
                         if (Background!= null)
                         {
-                            Background.material.SetFloat("_NoiseScrollY", 0.014f);
+                            Background.material.SetFloat("_NoiseScrollY", -0.1f);
                         }
 
                         SetEffectColor(loreBook.VisualColor);
@@ -214,6 +214,33 @@ namespace LoreBooks
             if (ParentCharacter != null)
             {
                 CurrentBook.OnBookOpened?.Invoke(ParentCharacter);
+
+
+                //if I can get this working properly then people can trigger things from SL_Effects instead of just code, lot more options.
+
+                //if (CurrentBook.EffectsOnOpen.Count > 0)
+                //{
+                //    GameObject tmpEffect = new GameObject();
+
+
+                //    SL_EffectTransform effectTransform = new SL_EffectTransform()
+                //    {
+                //        TransformName = "Normal"
+                //    };
+
+
+                //    effectTransform.Effects = CurrentBook.EffectsOnOpen.ToArray();
+                //    Transform actual = effectTransform.ApplyToTransform(tmpEffect.transform, EditBehaviours.Override);
+
+                //    Effect[] effects = actual.GetComponentsInChildren<Effect>();
+
+                //    foreach (var item in effects)
+                //    {
+                //        item.eff
+                //        LoreBooksMod.Log.LogMessage($"Triggering effect {item.name} on char");
+                //        item.Affect(ParentCharacter, ParentCharacter.transform.position, ParentCharacter.transform.forward);
+                //    }
+                //}
             }   
         }
 

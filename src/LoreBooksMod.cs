@@ -2,7 +2,6 @@
 using BepInEx.Bootstrap;
 using BepInEx.Configuration;
 using BepInEx.Logging;
-using Betwixt;
 using HarmonyLib;
 using SideLoader;
 using System;
@@ -94,6 +93,16 @@ namespace LoreBooks
 
                 if (featureBook != null)
                 {
+                    featureBook.EffectsOnOpen.Add(new SL_AddStatusEffect()
+                    {
+                        StatusEffect = "Bleeding"
+                    });
+
+                    featureBook.EffectsOnOpen.Add(new SL_Puke()
+                    {
+                        ChanceToTrigger = 100,
+                    });
+
                     featureBook.OnBookOpened += (Character Character) =>
                     {
                         Character.CharacterUI.NotificationPanel.ShowNotification("Book opened");
