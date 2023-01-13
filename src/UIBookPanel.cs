@@ -222,7 +222,8 @@ namespace LoreBooks
                 //{
                 //    GameObject tmpEffect = new GameObject();
 
-
+                // object[] infos = null;
+                //this.ProcessAffectInfos(_targetCharacter, _pos, _dir, ref infos);
                 //    SL_EffectTransform effectTransform = new SL_EffectTransform()
                 //    {
                 //        TransformName = "Normal"
@@ -236,12 +237,13 @@ namespace LoreBooks
 
                 //    foreach (var item in effects)
                 //    {
-                //        item.eff
+                //        object[] infos = null;
+                //        this.ProcessAffectInfos(_targetCharacter, _pos, _dir, ref infos);
                 //        LoreBooksMod.Log.LogMessage($"Triggering effect {item.name} on char");
                 //        item.Affect(ParentCharacter, ParentCharacter.transform.position, ParentCharacter.transform.forward);
                 //    }
                 //}
-            }   
+            }
         }
 
         public void SetTitleFont(Font Font)
