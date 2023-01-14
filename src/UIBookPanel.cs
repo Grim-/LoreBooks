@@ -218,31 +218,29 @@ namespace LoreBooks
 
                 //if I can get this working properly then people can trigger things from SL_Effects instead of just code, lot more options.
 
-                //if (CurrentBook.EffectsOnOpen.Count > 0)
-                //{
-                //    GameObject tmpEffect = new GameObject();
+                if (CurrentBook.EffectsOnOpen.Count > 0)
+                {
+                    GameObject tmpEffect = new GameObject();
 
-                // object[] infos = null;
-                //this.ProcessAffectInfos(_targetCharacter, _pos, _dir, ref infos);
-                //    SL_EffectTransform effectTransform = new SL_EffectTransform()
-                //    {
-                //        TransformName = "Normal"
-                //    };
+                    SL_EffectTransform effectTransform = new SL_EffectTransform()
+                    {
+                        TransformName = "Normal"
+                    };
 
 
-                //    effectTransform.Effects = CurrentBook.EffectsOnOpen.ToArray();
-                //    Transform actual = effectTransform.ApplyToTransform(tmpEffect.transform, EditBehaviours.Override);
+                    effectTransform.Effects = CurrentBook.EffectsOnOpen.ToArray();
+                    Transform actual = effectTransform.ApplyToTransform(tmpEffect.transform, EditBehaviours.Override);
 
-                //    Effect[] effects = actual.GetComponentsInChildren<Effect>();
+                    Effect[] effects = actual.GetComponentsInChildren<Effect>();
 
-                //    foreach (var item in effects)
-                //    {
-                //        object[] infos = null;
-                //        this.ProcessAffectInfos(_targetCharacter, _pos, _dir, ref infos);
-                //        LoreBooksMod.Log.LogMessage($"Triggering effect {item.name} on char");
-                //        item.Affect(ParentCharacter, ParentCharacter.transform.position, ParentCharacter.transform.forward);
-                //    }
-                //}
+                    foreach (var item in effects)
+                    {
+                        object[] infos = null;
+                        item.ProcessAffectInfos(ParentCharacter, ParentCharacter.transform.position, ParentCharacter.transform.forward, ref infos);
+                        LoreBooksMod.Log.LogMessage($"Triggering effect {item.name} on char");
+                        item.Affect(ParentCharacter, ParentCharacter.transform.position, ParentCharacter.transform.forward);
+                    }
+                }
             }
         }
 

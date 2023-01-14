@@ -24,15 +24,24 @@ namespace LoreBooks
         public const string GUID = "iggyandemo.lorebooks";
         public const string NAME = "LoreBooks";
         public const string VERSION = "1.0.0";
-        public const string LoreBookFolderName = "LoreBooks";
-        public static int EmonomiconID = -2905;
 
+
+        //XML Folder Name
+        public const string LoreBookFolderName = "LoreBooks";
+
+
+
+        public static int EmonomiconID = -2905;
+        public const string EXTRA_ACTION_KEY_MOD = "SeekingStone_Modifier";
+        public const string EXTRA_ACTION_KEY = "SeekingStone__Key";
 
         public static GameObject BookButtonPrefab;
 
         internal static ManualLogSource Log;
         public static LoreBooksMod Instance;
 
+
+        #region Config Entrys
         public static ConfigEntry<float> UIScale;
         public static ConfigEntry<float> PageTransitionSpeed;
         public static ConfigEntry<float> LineSpacing;
@@ -40,10 +49,10 @@ namespace LoreBooks
         public static ConfigEntry<int> FontMaxSize;
         public static ConfigEntry<Color> TextColor;
         public static ConfigEntry<TextAnchor> TextAlignment;
+        #endregion
 
         private GameObject UIPrefab => GetFromAssetBundle<GameObject>("lorebooks", "lorebookui", "UIBookPanel");
 
-        private Dictionary<Character, UIBookPanel> UIBookInstances = new Dictionary<Character, UIBookPanel>();
         //itemID, LorebookData
         public Dictionary<int, LoreBook> StoredBooks = new Dictionary<int, LoreBook>();
 
@@ -52,8 +61,12 @@ namespace LoreBooks
         /// You can use this event to find out when the mod is fully loaded, in order to add new Books.
         /// </summary>
         public Action OnReady;
+        /// <summary>
+        /// This event fires when all book definitions are deserialized. (You can use this to reference a book and add actions to the events, or add pages dynamically)
+        /// </summary>
         public Action OnBooksLoaded;
 
+        private Dictionary<Character, UIBookPanel> UIBookInstances = new Dictionary<Character, UIBookPanel>();
 
         internal void Awake()
         {
@@ -74,12 +87,57 @@ namespace LoreBooks
 
             Log.LogMessage($"{NAME} Loaded.");
 
+            CustomKeybindings.AddAction(EXTRA_ACTION_KEY_MOD, KeybindingsCategory.CustomKeybindings, ControlType.Both, InputType.Button);
+            CustomKeybindings.AddAction(EXTRA_ACTION_KEY, KeybindingsCategory.CustomKeybindings, ControlType.Both, InputType.Button);
 
             //this is called after all book definitions are loaded, so you can reference the book and register to c# events
             OnBooksLoaded += OnBookLoadingComplete;
 
             SL.OnPacksLoaded += SL_OnPacksLoaded;
             new Harmony(GUID).PatchAll();
+        }
+        private void SetUpItem()
+        {
+            SL_Equipment SeekingStone = new SL_Equipment()
+            {
+                Target_ItemID = 5100500,
+                New_ItemID = -110005,
+                Name = "Seeking Stone",
+                Description = "Slowly vibrates in your hand and glows when it has detected something.",
+                ItemVisuals = new SL_ItemVisual()
+                {
+                    Prefab_SLPack = "lorebooks",
+                    Prefab_AssetBundle = "emoseekingstone",
+                    Prefab_Name = "SeekingStone",
+                    Position = new Vector3(0.073f, -0.015f, 0.094f),
+                    Rotation = new Vector3(67.56058f, 138.624161f, 119.654831f)
+                },
+                Tags = new string[]
+                {
+                    "Lexicon"
+                }
+            };
+
+            SeekingStone.OnTemplateApplied += (item) =>
+            {
+                EmoSeekingStone emoSeekingStone = CheckOrAddComponent<EmoSeekingStone>(item.gameObject);
+
+            };
+
+            SeekingStone.ApplyTemplate();
+        }
+
+        public static T CheckOrAddComponent<T>(GameObject gameObject) where T : Component
+        {
+            T comp = gameObject.GetComponent<T>();
+
+            if (comp == null)
+            {
+                return gameObject.AddComponent<T>();
+
+            }
+
+            return comp;
         }
 
         private void OnBookLoadingComplete()
@@ -89,6 +147,11 @@ namespace LoreBooks
             {
                 //get the book reference
                 LoreBook featureBook = this.GetLoreBook(EmonomiconID);
+
+                featureBook.EffectsOnOpen.Add(new SL_AddStatusEffect()
+                {
+                    StatusEffect = "Bleeding"
+                });
 
 
                 if (featureBook != null)
@@ -232,7 +295,7 @@ namespace LoreBooks
         {
             BookButtonPrefab = OutwardHelpers.GetFromAssetBundle<GameObject>("lorebooks", "lorebookui", "UIBookButton");
             FindXMLDefinitions();
-
+            SetUpItem();
         }
 
         public void Start()

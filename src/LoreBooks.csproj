@@ -339,6 +339,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EmoSeekingStone.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="LoreBook.cs" />
     <Compile Include="LoreBookDefinition.cs" />
     <Compile Include="LoreBooksMod.cs" />
