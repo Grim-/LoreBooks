@@ -15,44 +15,55 @@ BookUID - A Unique ID for your book, allowing you to reference it from c# if req
 
 ```xml
 <LoreBookDefinition>
-<ItemID>-2905</ItemID>
-<BookUID>emonomicon</BookUID>
-<BookTitle>
-<![CDATA[
-<size=100>Emonomicon</size>
-]]>
-</BookTitle>
-<BookTitlePageContent>
-<![CDATA[
-  <color=red>
-  This book contains information on the features available to modders.
-  </color>
-]]>
-</BookTitlePageContent>
-<Pages>
-  <PageContent>
-    <PageTitle>LoreBooks Features (Events)</PageTitle>
-    <TextContent>
-<![CDATA[
-  <b>Events</b>
-   You can trigger events on certain actions, such as applying a status effect to the character opening the book.
-   (you are now bleeding, go to the next page).
-]]>
-  </TextContent>
-  </PageContent>
-  <PageContent>
-    <PageTitle>LoreBooks Features(Interactive)</PageTitle>
-    <TextContent>
-<![CDATA[
-     <color=red>Bleeding</color> Fixed!
-
-  <i>You can only read this book while you have more than zero Current Mana. Or anything you choose, such as quest completion, items owned, or area the player is in.</i>
-
-You can also press the default "Use" key (Space on PC) with certain books! Try it on this page.
-]]>
-   </TextContent>
-  </PageContent>
-</Pages>
+  <ItemID>-2905</ItemID>
+  <TargetItemID>5600050</TargetItemID>
+  <BookUID>emo.emonomicon</BookUID>
+  <BookTitle>The EMONOMICON</BookTitle>
+  <BookDescription>A vile, profane book, mainly used to demonstrate some features of LoreBooks.</BookDescription>
+  <UseVisual>true</UseVisual>
+  <VisualColor>
+    <r>97</r>
+    <g>0</g>
+    <b>153</b>
+    <a>255</a>
+  </VisualColor>
+  <BookTitle>
+    <![CDATA[
+    Emonomicon
+    ]]>
+  </BookTitle>
+  <BookTitlePageContent>
+    <![CDATA[
+    <b>This book contains information on the features available to modders.</b>
+    <i>LoreBooks has limited support for dynamic varibles in the text</i>
+    Character Name : {0}
+    HP ({1} / {2})
+    STAMINA ({3} / {4})
+    Scene Name {5}
+    ]]>
+  </BookTitlePageContent>
+  <Pages>
+    <PageContent>
+      <PageTitle>LoreBooks Features (Events)</PageTitle>
+      <TextContent>
+        <![CDATA[
+        <b>Events</b>
+        You can trigger events on certain actions, such as applying a status effect to the character opening the book.
+        (you are now bleeding, go to the next page).
+        ]]>
+      </TextContent>
+    </PageContent>
+    <PageContent>
+      <PageTitle>LoreBooks Features(Interactive)</PageTitle>
+      <TextContent>
+        <![CDATA[
+        <color=red>Bleeding</color> Fixed!
+        <i>You can only read this book while you have more than zero Current Mana. Or anything you choose, such as quest completion, items owned, or area the player is in.</i>
+        You can also press the default "Use" key (Space on PC) with certain books! Try it on this page.
+        ]]>
+      </TextContent>
+    </PageContent>
+  </Pages>
 </LoreBookDefinition>
 ```
 
@@ -142,17 +153,48 @@ You can also reference books once the OnBooksLoaded event has fired, allowing yo
         private void OnBookLoadingComplete()
         {
             //do things with the emonomicon
-            if (this.HasLoreBook(EmonomiconID))
+            if (LoreBooksMod.Instance.HasLoreBook("emo.emonomicon"))
             {
                 //get the book reference
-                LoreBook featureBook = this.GetLoreBook(EmonomiconID);
+                LoreBook featureBook = LoreBooksMod.Instance.GetLoreBook("emo.emonomicon");
 
                 if (featureBook != null)
                 {
-                    featureBook.OnBookOpened += (Character Character) =>
+                    Dictionary<AreaManager.AreaEnum, Area> Areas = new Dictionary<AreaManager.AreaEnum, Area>();
+
+                    Area Harmattan = AreaManager.Instance.GetArea(AreaManager.AreaEnum.Harmattan);
+                    Areas.Add(AreaManager.AreaEnum.Harmattan, Harmattan);
+
+                    Area CierzoOutside = AreaManager.Instance.GetArea(AreaManager.AreaEnum.CierzoOutside);
+                    Areas.Add(AreaManager.AreaEnum.CierzoOutside, CierzoOutside);
+
+                    Area Berg = AreaManager.Instance.GetArea(AreaManager.AreaEnum.Berg);
+                    Areas.Add(AreaManager.AreaEnum.Berg, Berg);
+
+                    Area Monsoon = AreaManager.Instance.GetArea(AreaManager.AreaEnum.Monsoon);
+                    Areas.Add(AreaManager.AreaEnum.Monsoon, Monsoon);
+
+
+                    int StartingPageCount = featureBook.PageCount;
+                    foreach (var area in Areas)
                     {
-                        Character.CharacterUI.NotificationPanel.ShowNotification("Book opened");
-                    };
+                        if (!featureBook.HasPage(StartingPageCount))
+                        {
+                            PageContent pagContent = new PageContent(area.Value.GetMapScreen(), $"{area.Value.GetName()}", area.Value.GetName());
+                            pagContent.IsButtonPage = true;
+
+                            PageContent Page = pagContent.AddButton($"Teleport To {area.Value.GetName()}", (UIBookPanel UIBookPanel, Character Character) =>
+                            {
+                                StartCoroutine(OutwardHelpers.TeleportToArea(Character, LoreBooksMod.Instance.GetBookManagerForCharacter(Character), area.Key));
+                            });
+
+                            featureBook.AddOrUpdatePageContent(StartingPageCount, pagContent);
+                            featureBook.LockPage(StartingPageCount);
+                            StartingPageCount++;
+                        }
+
+                    }
+
 
                     featureBook.OnPageOpened += (Character Character, int index) =>
                     {
@@ -160,44 +202,37 @@ You can also reference books once the OnBooksLoaded event has fired, allowing yo
                         {
                             Character.StatusEffectMngr.AddStatusEffect("Bleeding");
                         }
-
-                        if (index == 2)
+                        else if(index != 1 || index != 0)
                         {
-
                             if (Character.StatusEffectMngr.HasStatusEffect("Bleeding"))
                             {
                                 Character.StatusEffectMngr.RemoveStatusWithIdentifierName("Bleeding");
-                            }                         
+                            }
                         }
                     };
-
 
                     featureBook.OnInteractKeyPressed += (LoreBook LoreBook, int page, Character Character) =>
                     {
                         //if on page 2
                         if (page == 2)
                         {
-                            LoreBook cached = LoreBook;
-                            Character.CharacterUI.NotificationPanel.ShowNotification("Interact key pressed!");
-
-                            //if page 3 doesn't exist
-                            if (!cached.HasPage(3))
-                            {
-                                Character.CharacterUI.NotificationPanel.ShowNotification("You unlocked the hidden page!");
-                                cached.AddOrUpdatePageContent(3, new PageContent(null, $"{Character.Name}", "You unlocked the hidden page!"));
-                                UIBookPanel bookPanel = LoreBooksMod.Instance.GetBookManagerForCharacter(Character);
-                                bookPanel.ChangeToPage(cached, 3);
-                            }
+                            LoreBook.UnlockPages(new int[] { 3, 4, 5, 6 });
                         }
-
-      
+                        return false;
                     };
 
                     featureBook.CanOpenPredicate += (Character Character, LoreBook LoreBook) =>
                     {
-                        return Character.Mana > 0;
+                        if (Character.Mana <= 0)
+                        {
+                            Character.CharacterUI.NotificationPanel.ShowNotification("You cannot open the Emonomicon without a deeper understanding of magic.. find the source of the conflux.");
+                            return false;
+                        }
+
+                        return true;
                     };
                 }
+
 
             }
         }
