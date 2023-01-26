@@ -309,7 +309,6 @@ namespace LoreBooks
         #endregion
 
         #region XML
-
         private void FindXMLDefinitions()
         {
             string[] directoriesInPluginsFolder = Directory.GetDirectories(Paths.PluginPath);
@@ -408,7 +407,6 @@ namespace LoreBooks
 
             return null;
         }
-
         public LoreBook GetLoreBook(string bookUID)
         {
            return StoredBooks.First(x => x.Value.BookUID == bookUID).Value;
