@@ -1,0 +1,59 @@
+<LoreBookDefinition>
+  <ItemID>-2910</ItemID>
+  <BookUID>trueflame.caldera</BookUID>
+  <BookDescription></BookDescription>
+  <UseVisual>false</UseVisual>
+  <BookTitle>The Caldera</BookTitle>
+  <BookTitlePageContent>
+    The Caldera, by TrueFlame.
+  </BookTitlePageContent>
+  <Pages>
+    <PageContent>
+      <PageTitle></PageTitle>
+      <TextContent>
+        Land of the Three Brothers, Caldera is a place of volcanic ash and lava, covered in rich soil, dark and dangerous caves and crumbling abandoned structures.
+        It is, on the surface, an inhospitable place filled with death for any who dare tread there, yet it is the life of a Siroccan, who toils in the fiery depths of such a land.
+
+        Known for its oil refineries and wealth of metals, Caldera has been a land of industry for ages on, pushed ever forward to maintain such work by the nobles who watch over the city of Old Sirocco. Many times has the common folk felt the sting of a nobleman's lash and no doubt tire of such, "unpleasantries."
+      </TextContent>
+    </PageContent>
+    <PageContent>
+      <PageTitle></PageTitle>
+      <TextContent>
+        In order for the common folk to live in the harsh climates of Caldera, they must smoke Ambraine, a highly addictive herb which allows them to mitigate the affects of the heat and volcanic ash of the region, as without it they would perish. Undoubtedly the nobles take great advantage of such knowledge and utilize this addiction to subjugate the common folk.
+
+        While a volcanic region, the Lands of Caldera have quite a bit of flora, from peaches to maize, which feed off the rich volcanic soil of the region. Beyond this, Caldera's wildlife is unique only to its region, all strange and dangerous in their methods, from the spell-slinging Gastrocin to the Medyse, a floating creature that is known to prey on unwary travelers.
+      </TextContent>
+    </PageContent>
+    <PageContent>
+      <PageTitle></PageTitle>
+      <TextContent>
+        It is said that in Caldera, many dangerous creatures lurk within the many caves, hiding secrets from all who dare trespass. Perhaps an adventurer who is strong and skilled enough could uncover these secrets and the wealth residing in them for their own.
+        One can only imagine what sort of reward lay in wait for someone capable enough to walk the lands of Caldera and live to tell the tale.
+      </TextContent>
+    </PageContent>
+    <PageContent>
+      <PageTitle></PageTitle>
+      <TextContent>
+        To the northern region of Caldera resides the Giant's Colony, where the Giant-folk work tirelessly in their stronghold, spinning fabrics made from silk, which undoubtedly are traded across all Aurai, beyond their tributes to the Dusk Father and Dawn Weaver.
+        Not only do these Giants see fit to trade, but they also enjoy the pleasures of a personal sauna and bathhouse which they've made for themselves in the region.
+        Often times these bathhouses are fine tourist attractions to traveling adventurers who stumble upon their humble colony.
+      </TextContent>
+    </PageContent>
+    <PageContent>
+      <PageTitle></PageTitle>
+      <TextContent>
+        The many strange rocks and stones of the region are valuable commodities found rarely else in all Aurai, thus making them prized possessions to many and valuable goods to any trader wise and capable enough to find a source. Without a doubt, Caldera is quite rich in rare and valuable resources which should be coveted by any adventurer.
+      </TextContent>
+    </PageContent>
+    <PageContent>
+      <PageTitle></PageTitle>
+      <TextContent>
+        Somewhere in Caldera resides a mysterious ship that walks upon the land with a host of Calygrey.
+        This strange ship is a great ark of wood and metal hoisted high on the metal arms it uses to claw about the landscape. Often times, this ark will stay in a place for a time before moving once more to rest elsewhere. They say this ship brought with it the Calygrey, a group of magic-using beastmen foreign to the lands of Aurai, yet few know who the captain of this obscure vessel might be.
+
+        Caldera awaits the aid of travelers and adventurers alike who seek to forge a new path and build for themselves a life anew in this harsh and inhospitable land.
+      </TextContent>
+    </PageContent>
+  </Pages>
+</LoreBookDefinition>

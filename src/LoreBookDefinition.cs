@@ -7,8 +7,10 @@ using UnityEngine;
 public class LoreBookDefinition
 {
     public int ItemID;
+    public int TargetItemID;
     public string BookUID;
     public string BookTitle;
+    public string BookDescription;
     public string BookTitlePageContent;
     public bool UseVisual = false;
     public Color VisualColor = Color.cyan;

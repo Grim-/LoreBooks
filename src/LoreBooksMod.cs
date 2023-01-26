@@ -18,20 +18,23 @@ using UnityEngine.UI;
 namespace LoreBooks
 {
     [BepInPlugin(GUID, NAME, VERSION)]
-    //[BepInDependency(GUID, BepInDependency.DependencyFlags.HardDependency)]
     public class LoreBooksMod : BaseUnityPlugin
     {
         public const string GUID = "iggyandemo.lorebooks";
         public const string NAME = "LoreBooks";
         public const string VERSION = "1.0.0";
 
-
         //XML Folder Name
         public const string LoreBookFolderName = "LoreBooks";
 
-
+        public static int MagicalTomeHair = -2920;
+        public static int MagicalTomeHairColor = -2921;
 
         public static int EmonomiconID = -2905;
+        //Geps note
+        public static int GepsNoteID = 5601001;
+        public static int TribalFavour = 5600050;
+
         public const string EXTRA_ACTION_KEY_MOD = "SeekingStone_Modifier";
         public const string EXTRA_ACTION_KEY = "SeekingStone__Key";
 
@@ -66,7 +69,7 @@ namespace LoreBooks
         /// </summary>
         public Action OnBooksLoaded;
 
-        private Dictionary<Character, UIBookPanel> UIBookInstances = new Dictionary<Character, UIBookPanel>();
+        public Dictionary<Character, UIBookPanel> UIBookInstances = new Dictionary<Character, UIBookPanel>();
 
         internal void Awake()
         {
@@ -92,10 +95,37 @@ namespace LoreBooks
 
             //this is called after all book definitions are loaded, so you can reference the book and register to c# events
             OnBooksLoaded += OnBookLoadingComplete;
-
             SL.OnPacksLoaded += SL_OnPacksLoaded;
+
+            SceneManager.sceneLoaded += SceneManager_sceneLoaded;
+
             new Harmony(GUID).PatchAll();
         }
+
+        private void SceneManager_sceneLoaded(Scene Scene, LoadSceneMode arg1)
+        {
+            if (Scene.name == "MainMenu_Empty")
+            {
+                foreach (var item in UIBookInstances)
+                {
+                    Destroy(item.Value.gameObject);
+                }
+
+                UIBookInstances.Clear();
+            }
+        }
+
+        public void Start()
+        {
+            OnReady?.Invoke();
+        }
+        private void SL_OnPacksLoaded()
+        {
+            SetUpItem();
+            FindXMLDefinitions();
+            BookButtonPrefab = OutwardHelpers.GetFromAssetBundle<GameObject>("lorebooks", "lorebookui", "UIBookButton");
+        }
+
         private void SetUpItem()
         {
             SL_Equipment SeekingStone = new SL_Equipment()
@@ -120,56 +150,122 @@ namespace LoreBooks
 
             SeekingStone.OnTemplateApplied += (item) =>
             {
-                EmoSeekingStone emoSeekingStone = CheckOrAddComponent<EmoSeekingStone>(item.gameObject);
-
+                EmoSeekingStone emoSeekingStone = OutwardHelpers.CheckOrAddComponent<EmoSeekingStone>(item.gameObject);
             };
 
             SeekingStone.ApplyTemplate();
         }
 
-        public static T CheckOrAddComponent<T>(GameObject gameObject) where T : Component
-        {
-            T comp = gameObject.GetComponent<T>();
-
-            if (comp == null)
-            {
-                return gameObject.AddComponent<T>();
-
-            }
-
-            return comp;
-        }
 
         private void OnBookLoadingComplete()
         {
-            //do things with the emonomicon
-            if (this.HasLoreBook(EmonomiconID))
+            AddEmonomiconEffects();
+            AddMagicalTomeHairEffects();
+        }
+
+        private void AddMagicalTomeHairEffects()
+        {
+            //style
+            if (this.HasLoreBook("emo.magicaltome.hairstyle"))
             {
-                //get the book reference
-                LoreBook featureBook = this.GetLoreBook(EmonomiconID);
-
-                featureBook.EffectsOnOpen.Add(new SL_AddStatusEffect()
-                {
-                    StatusEffect = "Bleeding"
-                });
-
+                LoreBook featureBook = this.GetLoreBook("emo.magicaltome.hairstyle");
 
                 if (featureBook != null)
                 {
-                    featureBook.EffectsOnOpen.Add(new SL_AddStatusEffect()
+                    for (int i = 0; i < CharacterManager.CharacterVisualsPresets.Hairs.Length; i++)
                     {
-                        StatusEffect = "Bleeding"
-                    });
+                        PageContent pageContent = new PageContent(null, $"Hair Style {i}", "Press the interact key to choose this hair style.");
+                        featureBook.AddOrUpdatePageContent(i, pageContent);
+                    }
 
-                    featureBook.EffectsOnOpen.Add(new SL_Puke()
+                    featureBook.OnInteractKeyPressed += (LoreBook LoreBook, int PageIndex, Character Character) =>
                     {
-                        ChanceToTrigger = 100,
-                    });
+                        Character.CharacterUI.NotificationPanel.ShowNotification($"Setting Hair to {PageIndex}");
+                        Character.VisualData.HairStyleIndex = PageIndex;
+                        GameObject.Destroy(Character.Visuals.DefaultHairVisuals.gameObject);
+                        Character.Visuals.LoadCharacterCreationHair(PageIndex, Character.Visuals.VisualData.HairColorIndex);
+                        Character.Inventory.RemoveItem(LoreBook.BookItemID, 1);
 
-                    featureBook.OnBookOpened += (Character Character) =>
-                    {
-                        Character.CharacterUI.NotificationPanel.ShowNotification("Book opened");
+                        //return true to close book ui
+                        return true;
                     };
+                }
+            }
+
+            //color
+
+            if (this.HasLoreBook("emo.magicaltome.haircolor"))
+            {
+                LoreBook featureBook = this.GetLoreBook("emo.magicaltome.haircolor");
+
+                if (featureBook != null)
+                {
+                    //just triggering the property before the for loop so the HairMaterials array is filled
+                    CharacterManager.CharacterVisualsPresets.ToString();
+
+                    for (int i = 0; i < CharacterManager.CharacterVisualsPresets.HairMaterials.Length; i++)
+                    {
+                        PageContent pageContent = new PageContent(null, $"Hair Color {i}", "Press the interact key to choose this hair style.");
+                        featureBook.AddOrUpdatePageContent(i, pageContent);
+                    }
+
+                    featureBook.OnInteractKeyPressed += (LoreBook LoreBook, int PageIndex, Character Character) =>
+                    {
+                        Character.CharacterUI.NotificationPanel.ShowNotification($"Setting Hair to {PageIndex}");
+                        Character.VisualData.HairColorIndex = PageIndex;
+                        Character.Visuals.LoadCharacterCreationHair(Character.Visuals.VisualData.HairStyleIndex, PageIndex);
+                        Character.Inventory.RemoveItem(LoreBook.BookItemID, 1);
+                        //return true to close book ui
+                        return true;
+                    };
+                }
+            }
+        }
+        private void AddEmonomiconEffects()
+        {
+            //do things with the emonomicon
+            if (this.HasLoreBook("emo.emonomicon"))
+            {
+                //get the book reference
+                LoreBook featureBook = this.GetLoreBook("emo.emonomicon");
+
+                if (featureBook != null)
+                {
+                    Dictionary<AreaManager.AreaEnum, Area> Areas = new Dictionary<AreaManager.AreaEnum, Area>();
+
+                    Area Harmattan = AreaManager.Instance.GetArea(AreaManager.AreaEnum.Harmattan);
+                    Areas.Add(AreaManager.AreaEnum.Harmattan, Harmattan);
+
+                    Area CierzoOutside = AreaManager.Instance.GetArea(AreaManager.AreaEnum.CierzoOutside);
+                    Areas.Add(AreaManager.AreaEnum.CierzoOutside, CierzoOutside);
+
+                    Area Berg = AreaManager.Instance.GetArea(AreaManager.AreaEnum.Berg);
+                    Areas.Add(AreaManager.AreaEnum.Berg, Berg);
+
+                    Area Monsoon = AreaManager.Instance.GetArea(AreaManager.AreaEnum.Monsoon);
+                    Areas.Add(AreaManager.AreaEnum.Monsoon, Monsoon);
+
+
+                    int StartingPageCount = featureBook.PageCount;
+                    foreach (var area in Areas)
+                    {
+                        if (!featureBook.HasPage(StartingPageCount))
+                        {
+                            PageContent pagContent = new PageContent(area.Value.GetMapScreen(), $"{area.Value.GetName()}", area.Value.GetName());
+                            pagContent.IsButtonPage = true;
+
+                            PageContent Page = pagContent.AddButton($"Teleport To {area.Value.GetName()}", (UIBookPanel UIBookPanel, Character Character) =>
+                            {
+                                StartCoroutine(OutwardHelpers.TeleportToArea(Character, LoreBooksMod.Instance.GetBookManagerForCharacter(Character), area.Key));
+                            });
+
+                            featureBook.AddOrUpdatePageContent(StartingPageCount, pagContent);
+                            featureBook.LockPage(StartingPageCount);
+                            StartingPageCount++;
+                        }
+
+                    }
+
 
                     featureBook.OnPageOpened += (Character Character, int index) =>
                     {
@@ -177,81 +273,30 @@ namespace LoreBooks
                         {
                             Character.StatusEffectMngr.AddStatusEffect("Bleeding");
                         }
-
-                        if (index == 2)
+                        else if(index != 1 || index != 0)
                         {
                             if (Character.StatusEffectMngr.HasStatusEffect("Bleeding"))
                             {
                                 Character.StatusEffectMngr.RemoveStatusWithIdentifierName("Bleeding");
-                            }                         
+                            }
                         }
                     };
-
 
                     featureBook.OnInteractKeyPressed += (LoreBook LoreBook, int page, Character Character) =>
                     {
                         //if on page 2
                         if (page == 2)
                         {
-                            LoreBook cached = LoreBook;
-                            Character.CharacterUI.NotificationPanel.ShowNotification("Interact key pressed!");
-
-                            //if page 3 doesn't exist
-                            if (!cached.HasPage(3))
-                            {
-                                UIBookPanel bookPanel = LoreBooksMod.Instance.GetBookManagerForCharacter(Character);
-                                bookPanel.ShowEffect();
-                                Character.CharacterUI.NotificationPanel.ShowNotification("You unlocked the hidden page!");
-
-                                PageContent pagContent = new PageContent(null, $"{Character.Name}", "You unlocked the hidden page!");
-
-
-                                pagContent.IsButtonPage = true;
-
-                                pagContent.AddButton("Mini Teleport", (Character Character) =>
-                                {
-                                    Character.Teleport(Character.transform.position + Character.transform.forward * 2f, Character.transform.rotation);
-
-                                });
-
-                                pagContent.AddButton("Teleport to Harmattan", (Character Character) =>
-                                {
-                                    StartCoroutine(TeleportToArea(Character, bookPanel, AreaManager.AreaEnum.Harmattan));                                
-                                });
-
-                                pagContent.AddButton("Teleport to Cierzo", (Character Character) =>
-                                {
-                                    StartCoroutine(TeleportToArea(Character, bookPanel, AreaManager.AreaEnum.CierzoOutside));
-                                });
-
-                                pagContent.AddButton("Teleport to Berg", (Character Character) =>
-                                {
-                                    StartCoroutine(TeleportToArea(Character, bookPanel, AreaManager.AreaEnum.Berg));
-                                });
-
-                                pagContent.AddButton("Teleport to Monsoon", (Character Character) =>
-                                {
-                                    StartCoroutine(TeleportToArea(Character, bookPanel, AreaManager.AreaEnum.Monsoon));
-                                });
-
-                                cached.AddOrUpdatePageContent(3, pagContent);
-                                bookPanel.ChangeToPage(cached, 3);
-
-
-
-                            }
+                            LoreBook.UnlockPages(new int[] { 3, 4, 5, 6 });
                         }
-
-      
+                        return false;
                     };
 
                     featureBook.CanOpenPredicate += (Character Character, LoreBook LoreBook) =>
                     {
-
                         if (Character.Mana <= 0)
                         {
-                            Character.CharacterUI.NotificationPanel.ShowNotification("You cannot open the Emonomicon without a deeper understanding of magic, you plebian.");
-                            Character.StatusEffectMngr.AddStatusEffect("Doomed");
+                            Character.CharacterUI.NotificationPanel.ShowNotification("You cannot open the Emonomicon without a deeper understanding of magic.. find the source of the conflux.");
                             return false;
                         }
 
@@ -263,46 +308,6 @@ namespace LoreBooks
             }
         }
 
-
-        private IEnumerator TeleportToArea(Character Character, UIBookPanel bookPanel, AreaManager.AreaEnum Area)
-        {
-            if (!Character.InLocomotion || !Character.NextIsLocomotion || Character.PreparingToSleep)
-            {
-                yield break;
-            }
-
-            if (Character && Character.IsLocalPlayer)
-            {
-                //yield return bookPanel.FadeEffect(0, 1, 1f);
-
-                yield return new WaitForSeconds(1f);
-
-                Area target = AreaManager.Instance.GetArea(Area);
-
-                if (target != null)
-                {
-                    bookPanel.Hide();
-                    //yield return bookPanel.FadeEffect(1, 0, 0.001f);
-
-                    CharacterManager.Instance.RequestAreaSwitch(Character, target, 0, 0, 0, "");
-                }
-            }
-
-            yield break;
-        }
-
-        private void SL_OnPacksLoaded()
-        {
-            BookButtonPrefab = OutwardHelpers.GetFromAssetBundle<GameObject>("lorebooks", "lorebookui", "UIBookButton");
-            FindXMLDefinitions();
-            SetUpItem();
-        }
-
-        public void Start()
-        {
-            OnReady?.Invoke();
-        }
-        
         private void FindXMLDefinitions()
         {
             string[] directoriesInPluginsFolder = Directory.GetDirectories(Paths.PluginPath);
@@ -312,8 +317,8 @@ namespace LoreBooks
 
                 if (HasFolder(Path))
                 {
-                    Log.LogMessage($"Found {LoreBookFolderName} folder at {directory}");
-                    string[] filePaths = Directory.GetFiles(Path, "*.xml");
+                    //Log.LogMessage($"Found {LoreBookFolderName} folder at {directory}");
+                    string[] filePaths = Directory.GetFiles(Path, "*.xml", SearchOption.AllDirectories);
 
                     foreach (var item in filePaths)
                     {
@@ -321,11 +326,20 @@ namespace LoreBooks
 
                         if (bookDefinition != null)
                         {
-                            LoreBook loreBook = new LoreBook(bookDefinition.BookUID, bookDefinition.BookTitle, bookDefinition.BookTitlePageContent, null, null);
-                            //LoreBooksMod.Log.LogMessage("COLOR : " + bookDefinition.VisualColor);
-                            loreBook.VisualColor = new Color32(((byte)bookDefinition.VisualColor.r), ((byte)bookDefinition.VisualColor.g), ((byte)bookDefinition.VisualColor.b), ((byte)bookDefinition.VisualColor.a));
-                            loreBook.UseVisual = bookDefinition.UseVisual;
+                            SL_Item bookItem = new SL_Item()
+                            {
+                                New_ItemID = bookDefinition.ItemID,
+                                Target_ItemID = bookDefinition.TargetItemID != 0 ? bookDefinition.TargetItemID : GepsNoteID,
+                                Name = bookDefinition.BookTitle,
+                                Description = string.IsNullOrEmpty(bookDefinition.BookDescription) ? bookDefinition.BookUID : bookDefinition.BookDescription
+                            };
 
+                            bookItem.ApplyTemplate();
+
+                            LoreBook loreBook = new LoreBook(bookDefinition.BookUID, bookDefinition.BookTitle, bookDefinition.BookTitlePageContent, null, null);
+                            loreBook.VisualColor = new Color(bookDefinition.VisualColor.r, bookDefinition.VisualColor.g, bookDefinition.VisualColor.b, bookDefinition.VisualColor.a);
+                            loreBook.UseVisual = bookDefinition.UseVisual;
+                            loreBook.BookItemID = bookDefinition.ItemID;
                             loreBook.AddOrUpdatePageContent(0, new PageContent(null, bookDefinition.BookTitle, bookDefinition.BookTitlePageContent));
 
                             for (int i = 0; i < bookDefinition.Pages.Count; i++)
@@ -345,6 +359,7 @@ namespace LoreBooks
             OnBooksLoaded?.Invoke();
         }
 
+
         public T DeserializeFromXML<T>(string path)
         {
             XmlSerializer serializer = new XmlSerializer(typeof(T));
@@ -353,13 +368,13 @@ namespace LoreBooks
             reader.Close();
             return deserialized;
         }
-
         private bool HasFolder(string FolderLocation)
         {
             return Directory.Exists(FolderLocation);
         }
 
 
+        #region LoreBook
         /// <summary>
         /// Adds a new LoreBook to the AvailableBooks dictionary
         /// </summary>
@@ -380,6 +395,10 @@ namespace LoreBooks
         {
            return StoredBooks.ContainsKey(bookItemID);
         }
+        public bool HasLoreBook(string bookUID)
+        {
+            return StoredBooks.First(x=> x.Value.BookUID == bookUID).Value != null;
+        }
         public LoreBook GetLoreBook(int bookItemID)
         {
             if (StoredBooks.ContainsKey(bookItemID))
@@ -390,6 +409,14 @@ namespace LoreBooks
             return null;
         }
 
+        public LoreBook GetLoreBook(string bookUID)
+        {
+           return StoredBooks.First(x => x.Value.BookUID == bookUID).Value;
+        }
+
+        #endregion
+
+        #region BookUI
         //Creates an instance of the BookUI for each Character, it is parented to the Characters.CharacterUI Canvas.
         public void CreateBookUIForCharacter(Character Character)
         {
@@ -449,6 +476,7 @@ namespace LoreBooks
             return null;
         }
 
+        #endregion
 
         #region Helpers
         public void DelayDo(Action OnAfterDelay, float DelayTime)

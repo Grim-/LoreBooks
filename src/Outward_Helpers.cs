@@ -135,6 +135,45 @@ namespace LoreBooks
 
             return default(Tag);
         }
+        public static T CheckOrAddComponent<T>(GameObject gameObject) where T : Component
+        {
+            T comp = gameObject.GetComponent<T>();
+
+            if (comp == null)
+            {
+                return gameObject.AddComponent<T>();
+
+            }
+
+            return comp;
+        }
+
+        public static IEnumerator TeleportToArea(Character Character, UIBookPanel bookPanel, AreaManager.AreaEnum Area)
+        {
+            if (!Character.InLocomotion || !Character.NextIsLocomotion || Character.PreparingToSleep)
+            {
+                yield break;
+            }
+
+            if (Character && Character.IsLocalPlayer)
+            {
+                //yield return bookPanel.FadeEffect(0, 1, 1f);
+
+                yield return new WaitForSeconds(1f);
+
+                Area target = AreaManager.Instance.GetArea(Area);
+
+                if (target != null)
+                {
+                    bookPanel.Hide();
+                    //yield return bookPanel.FadeEffect(1, 0, 0.001f);
+
+                    CharacterManager.Instance.RequestAreaSwitch(Character, target, 0, 0, 0, "");
+                }
+            }
+
+            yield break;
+        }
 
         public static OutwardRegions GetActiveRegionFromSceneName(string SceneName)
         {

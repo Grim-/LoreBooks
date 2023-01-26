@@ -339,6 +339,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BookSaveData.cs" />
     <Compile Include="EmoSeekingStone.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="LoreBook.cs" />

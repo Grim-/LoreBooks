@@ -21,6 +21,9 @@ namespace LoreBooks
         [XmlIgnore]
         public Func<Character, LoreBook, bool> CanOpenPredicate;
 
+        [XmlIgnoreAttribute]
+        public LoreBook ParentBook;
+
         public PageContent()
         {
 
@@ -34,13 +37,16 @@ namespace LoreBooks
         }
 
 
-        public void AddButton(string buttonLabel, Action<Character> OnButtonPress)
+        public PageContent AddButton(string buttonLabel, Action<UIBookPanel, Character> OnButtonPress)
         {
             if (Buttons.Find(x=> x.ButtonText == buttonLabel) == null)
             {
-                Buttons.Add(new ButtonPageContent(buttonLabel, OnButtonPress));
+                var newButton = new ButtonPageContent(buttonLabel, OnButtonPress);
+                Buttons.Add(newButton);
+                return this;
             }
 
+            return null;
         }
     }
 
@@ -49,14 +55,14 @@ namespace LoreBooks
     {
         public string ButtonText = string.Empty;
         [XmlIgnore]
-        public Action<Character> ButtonAction;
+        public Action<UIBookPanel, Character> ButtonAction;
 
         public ButtonPageContent()
         {
 
         }
 
-        public ButtonPageContent(string buttonText, Action<Character> buttonAction)
+        public ButtonPageContent(string buttonText, Action<UIBookPanel, Character> buttonAction)
         {
             ButtonText = buttonText;
             ButtonAction = buttonAction;

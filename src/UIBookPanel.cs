@@ -115,7 +115,6 @@ namespace LoreBooks
                         GoToPrevPage();
                     }
 
-
                     if (ControlsInput.GoToNextFilterTab(ParentCharacter.OwnerPlayerSys.PlayerID))
                     {
                         GoToNextPage();
@@ -125,7 +124,10 @@ namespace LoreBooks
                     {
                         if (CurrentBook != null)
                         {
-                            CurrentBook?.OnInteractKeyPressed?.Invoke(CurrentBook, CurrentPageIndex, ParentCharacter);
+                            if ((bool)(CurrentBook?.OnInteractKeyPressed?.Invoke(CurrentBook, CurrentPageIndex, ParentCharacter)))
+                            {
+                                this.Hide();
+                            }
                         }
                     }
                 }
@@ -169,8 +171,7 @@ namespace LoreBooks
 
             ContentLabel = transform.Find("Panel/Scroll View/Viewport/Content").gameObject.GetComponent<Text>();
         }
-
-        
+  
         public void ShowBook(LoreBook loreBook)
         {
             if (loreBook != null)
@@ -186,7 +187,7 @@ namespace LoreBooks
                     {
                         //this is just for now, I need to move it 
 
-                        if (Background!= null)
+                        if (Background != null)
                         {
                             Background.material.SetFloat("_NoiseScrollY", -0.1f);
                         }
@@ -199,15 +200,29 @@ namespace LoreBooks
                         HideEffect();
                     }
 
+
+                    if (CurrentBook != null)
+                    {
+                        CurrentBook.OnBookPageInfoChange -= OnPageInfoChange;
+                    }
+
                     SetCurrentLoreBook(loreBook);
                 }   
+            }
+        }
+
+        private void OnPageInfoChange(LoreBook obj)
+        {
+            if (IsVisible)
+            {
+                UpdateCurrentPageLabel();
             }
         }
 
         public void SetCurrentLoreBook(LoreBook NewBook)
         {
             CurrentBook = NewBook;
-
+            CurrentBook.OnBookPageInfoChange += OnPageInfoChange;
 
             SetPageContent(CurrentBook, 0);
 
@@ -218,29 +233,29 @@ namespace LoreBooks
 
                 //if I can get this working properly then people can trigger things from SL_Effects instead of just code, lot more options.
 
-                if (CurrentBook.EffectsOnOpen.Count > 0)
-                {
-                    GameObject tmpEffect = new GameObject();
+                //if (CurrentBook.EffectsOnOpen.Count > 0)
+                //{
+                //    GameObject tmpEffect = new GameObject();
 
-                    SL_EffectTransform effectTransform = new SL_EffectTransform()
-                    {
-                        TransformName = "Normal"
-                    };
+                //    SL_EffectTransform effectTransform = new SL_EffectTransform()
+                //    {
+                //        TransformName = "Normal"
+                //    };
 
 
-                    effectTransform.Effects = CurrentBook.EffectsOnOpen.ToArray();
-                    Transform actual = effectTransform.ApplyToTransform(tmpEffect.transform, EditBehaviours.Override);
+                //    effectTransform.Effects = CurrentBook.EffectsOnOpen.ToArray();
+                //    Transform actual = effectTransform.ApplyToTransform(tmpEffect.transform, EditBehaviours.Override);
 
-                    Effect[] effects = actual.GetComponentsInChildren<Effect>();
+                //    Effect[] effects = actual.GetComponentsInChildren<Effect>();
 
-                    foreach (var item in effects)
-                    {
-                        object[] infos = null;
-                        item.ProcessAffectInfos(ParentCharacter, ParentCharacter.transform.position, ParentCharacter.transform.forward, ref infos);
-                        LoreBooksMod.Log.LogMessage($"Triggering effect {item.name} on char");
-                        item.Affect(ParentCharacter, ParentCharacter.transform.position, ParentCharacter.transform.forward);
-                    }
-                }
+                //    foreach (var item in effects)
+                //    {
+                //        object[] infos = null;
+                //        item.ProcessAffectInfos(ParentCharacter, ParentCharacter.transform.position, ParentCharacter.transform.forward, ref infos);
+                //        LoreBooksMod.Log.LogMessage($"Triggering effect {item.name} on char");
+                //        item.Affect(ParentCharacter, ParentCharacter.transform.position, ParentCharacter.transform.forward);
+                //    }
+                //}
             }
         }
 
@@ -251,7 +266,6 @@ namespace LoreBooks
                 TitleLabel.font = Font;
             }
         }
-
         public void SetTitleFontAutoSize(int minSize, int maxSize)
         {
             if (TitleLabel != null)
@@ -261,8 +275,6 @@ namespace LoreBooks
                 TitleLabel.resizeTextMaxSize = maxSize;
             }
         }
-
-
         public void SetContentFont(Font Font)
         {
             if (ContentLabel != null && Font != null)
@@ -270,7 +282,6 @@ namespace LoreBooks
                 ContentLabel.font = Font;
             }
         }
-
         public void SetContentFontAutoSize(int minSize, int maxSize)
         {
             if (ContentLabel != null)
@@ -288,7 +299,6 @@ namespace LoreBooks
                 ContentLabel.color = color;
             }
         }
-
         public void SetContentAlignment(TextAnchor textAlignment)
         {
             if (ContentLabel != null)
@@ -296,9 +306,6 @@ namespace LoreBooks
                 ContentLabel.alignment = textAlignment;
             }
         }
-
-
-
         public void ChangeToPage(LoreBook Book, int pageIndex)
         {
             if (IsPageTransitioning)
@@ -312,7 +319,6 @@ namespace LoreBooks
             }
 
         }
-
         public void SetLineSpace(float spacing)
         {
             if (ContentLabel != null)
@@ -321,7 +327,6 @@ namespace LoreBooks
             }
         }
 
-
         private void SetCurrentPageLabel(string CurrentPage)
         {
             if (CurrentPageLabel != null)
@@ -329,7 +334,6 @@ namespace LoreBooks
                 CurrentPageLabel.text = CurrentPage;
             }
         }
-
         private void SetPreviousPageLabelKey(string value)
         {
             if (PreviousPageLabel != null)
@@ -337,7 +341,6 @@ namespace LoreBooks
                 PreviousPageLabel.text = value;
             }
         }
-
         private void SetNextPageLabelKey(string value)
         {
             if (NextPageLabel != null)
@@ -394,7 +397,7 @@ namespace LoreBooks
 
                             but.onClick.AddListener(() =>
                             {
-                                button.ButtonAction?.Invoke(ParentCharacter);
+                                button.ButtonAction?.Invoke(this, ParentCharacter);
                             });
 
                             ((RectTransform)tmp.transform).SetParent(ButtonContainer.transform, false);
@@ -417,10 +420,11 @@ namespace LoreBooks
 
 
 
+                    Book.PagesInfo[pageIndex].PageHasBeenViewed = true;
 
                     Book.OnPageOpened?.Invoke(ParentCharacter, pageIndex);
                     SetCurrentPageIndex(pageIndex);
-                    SetCurrentPageLabel($"{CurrentPageIndex+1} / { Book.PageCount}");
+                    UpdateCurrentPageLabel();
                 }
             }
         }
@@ -525,7 +529,11 @@ namespace LoreBooks
                 //Currently less than or equal to last page
                 if (NextPage <= CurrentBook.PageCount)
                 {
-                    ChangeToPage(CurrentBook, NextPage);
+                    if (CurrentBook.HasUnlockedPage(NextPage))
+                    {
+                        ChangeToPage(CurrentBook, NextPage);
+                    }
+
                 }
             }
         }
@@ -551,16 +559,32 @@ namespace LoreBooks
         {
             if (headerImage != null)
             {
-                HeaderImage.gameObject.SetActive(true);
-                HeaderImage.sprite = headerImage;
+                if (HeaderImage)
+                {
+                    HeaderImage.gameObject.SetActive(true);
+                    HeaderImage.sprite = headerImage;
+                }
+
             }
-            else HeaderImage.gameObject.SetActive(false);
+            else
+            {
+                if (HeaderImage)
+                {
+                    HeaderImage.gameObject.SetActive(false);
+                }
+            }
         }
 
         private void SetCurrentPageIndex(int newPageIndex)
         {
             CurrentPageIndex = newPageIndex;
         }
+
+        private void UpdateCurrentPageLabel()
+        {
+            SetCurrentPageLabel($"{CurrentPageIndex + 1} / { CurrentBook.UnlockedPageCount}");
+        }
+
 
         public virtual bool CanCharacterOpenBook(LoreBook LoreBook, Character Character)
         {

@@ -1,0 +1,32 @@
+<LoreBookDefinition>
+<ItemID>-2921</ItemID>
+<TargetItemID>5600050</TargetItemID>
+<BookTitle>Magic Tome : Hair Color</BookTitle>
+<BookUID>emo.magicaltome.haircolor</BookUID>
+<BookDescription>
+  <![CDATA[
+    <color=cyan>This magical tome allows you to instantly change your hair color, who goes to a barber these days?</color>
+    <color=red>  It is consumed on use. </color>
+
+    Instructions : browse to the page of the hairstyle you want and press the 'MenuQuickAction' key.
+  ]]>
+</BookDescription>
+<UseVisual>true</UseVisual>
+<VisualColor>
+     <r>102</r>
+     <g>252</g>
+     <b>3</b>
+     <a>255</a>
+</VisualColor>
+<BookTitle>Magical Tome : Hair Color</BookTitle>
+<BookTitlePageContent>
+  <![CDATA[
+    <color=cyan>This magical tome allows you to instantly change your hair color, who goes to a barber these days?</color>
+    <color=red>  It is consumed on use. </color>
+
+    Instructions : browse to the page of the hairstyle you want and press the 'MenuQuickAction' key.
+  ]]>
+</BookTitlePageContent>
+<Pages>
+</Pages>
+</LoreBookDefinition>

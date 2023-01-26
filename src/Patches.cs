@@ -80,7 +80,7 @@ namespace LoreBooks
             {
                 LoreBooksMod.Instance.DelayDo(() =>
                 {
-                    if (__instance.IsLocalPlayer) LoreBooksMod.Instance.CreateBookUIForCharacter(__instance);
+                    if (__instance.IsLocalPlayer && !LoreBooksMod.Instance.UIBookInstances.ContainsKey(__instance)) LoreBooksMod.Instance.CreateBookUIForCharacter(__instance);
                 }, 3f);
             }
         }

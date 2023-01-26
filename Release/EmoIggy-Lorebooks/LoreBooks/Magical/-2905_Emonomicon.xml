@@ -1,0 +1,51 @@
+<LoreBookDefinition>
+  <ItemID>-2905</ItemID>
+  <TargetItemID>5600050</TargetItemID>
+  <BookUID>emo.emonomicon</BookUID>
+  <BookTitle>The EMONOMICON</BookTitle>
+  <BookDescription>A vile, profane book, mainly used to demonstrate some features of LoreBooks.</BookDescription>
+  <UseVisual>true</UseVisual>
+  <VisualColor>
+    <r>97</r>
+    <g>0</g>
+    <b>153</b>
+    <a>255</a>
+  </VisualColor>
+  <BookTitle>
+    <![CDATA[
+    Emonomicon
+    ]]>
+  </BookTitle>
+  <BookTitlePageContent>
+    <![CDATA[
+    <b>This book contains information on the features available to modders.</b>
+    <i>LoreBooks has limited support for dynamic varibles in the text</i>
+    Character Name : {0}
+    HP ({1} / {2})
+    STAMINA ({3} / {4})
+    Scene Name {5}
+    ]]>
+  </BookTitlePageContent>
+  <Pages>
+    <PageContent>
+      <PageTitle>LoreBooks Features (Events)</PageTitle>
+      <TextContent>
+        <![CDATA[
+        <b>Events</b>
+        You can trigger events on certain actions, such as applying a status effect to the character opening the book.
+        (you are now bleeding, go to the next page).
+        ]]>
+      </TextContent>
+    </PageContent>
+    <PageContent>
+      <PageTitle>LoreBooks Features(Interactive)</PageTitle>
+      <TextContent>
+        <![CDATA[
+        <color=red>Bleeding</color> Fixed!
+        <i>You can only read this book while you have more than zero Current Mana. Or anything you choose, such as quest completion, items owned, or area the player is in.</i>
+        You can also press the default "Use" key (Space on PC) with certain books! Try it on this page.
+        ]]>
+      </TextContent>
+    </PageContent>
+  </Pages>
+</LoreBookDefinition>
