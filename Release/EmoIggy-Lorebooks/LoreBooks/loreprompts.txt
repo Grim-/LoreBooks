@@ -1,0 +1,153 @@
+Write a three page book about hunting a manticore from the perspective of a long dead hunter in their journal,
+
+
+Manticores are vulnerable to fire damage, they inflict extreme poison so an antidote is handy to have and they are resistant to decay damage
+
+
+
+It can launch upto 6 spike projectiles from its tail
+It has a pounce and charge attack with long ranges.
+
+it is Found west of the Cabal of wind Temple in the south of the Enmerkar Forest.
+
+in this format
+
+<LoreBookDefinition>
+  <ItemID></ItemID>
+  <BookUID></BookUID>
+  <BookDescription></BookDescription>
+  <UseVisual>false</UseVisual>
+  <BookTitle></BookTitle>
+  <BookTitlePageContent>
+  </BookTitlePageContent>
+  <Pages>
+    <PageContent>
+      <PageTitle></PageTitle>
+      <TextContent>
+      </TextContent>
+    </PageContent>
+  </Pages>
+</LoreBookDefinition>
+
+
+
+Alpha Taunosaur
+
+Write a four page book from the perspective of a hunter, on their encounter with an Alpha Taunosaur after being tasked with hunting it down by some locals, imply the hunter is long dead in the first page.
+
+Combat & Tactics
+These creatures are highly aggressive, and will engage the player upon sight. They are much more powerful than their base variants, especially in damage and durability.
+
+Its claws inflict bleeding
+Can fire a large Fire explosion which deals 35 Fire Fire damage and 130 Impact.
+
+Habitat
+Alpha Tuanosaurs are rarely found within the Hallowed Marsh region. There is usually one outside the giant tree in the center of the map, as well as one inside the Reptilian Lair.
+
+It lives in packs, with only one Alpha per pack.
+
+
+in this format
+
+```xml
+<LoreBookDefinition>
+  <ItemID></ItemID>
+  <BookUID></BookUID>
+  <BookDescription></BookDescription>
+  <UseVisual>false</UseVisual>
+  <BookTitle></BookTitle>
+  <BookTitlePageContent>
+  </BookTitlePageContent>
+  <Pages>
+    <PageContent>
+      <PageTitle></PageTitle>
+      <TextContent>
+      </TextContent>
+    </PageContent>
+  </Pages>
+</LoreBookDefinition>
+```
+
+The First Cannibal
+
+Write a four page horror story book from the perspective of a human female who along with  her two best friend has become trapped in a cave filling with corruption and how they resort to cannibalism imply this human is The First Cannibal, in an informal journal style, the person does not know they are turning into a powerful wendigo
+
+The First Cannibal is A powerful Wendigo.
+
+The Wendigo is a warning. A warning of what one can become if they forsake human bonds. Wendigo are humans who, for one reason or another, turn to cannibalism and develop a taste for human flesh.
+
+The monstrous, barely sentient form they eventually take is the end result.
+
+write all the Combat & Tactics as things the human female starts to hate
+The creature is highly resistant to Frost Frost damage, and vulnerable to Lightning Lightning and Fire Fire.
+
+Inflicts Chill (guaranteed)
+Inflicts Meeka Fever (low chance)
+Melee attacks inflict low amounts of corruption
+A powerful Frost attack which deals 40 Frost Damage and 75 Impact
+
+Habitat
+found at the Face of the Ancients in Enmerkar Forest.
+
+
+in this format
+
+```xml
+<LoreBookDefinition>
+  <ItemID></ItemID>
+  <BookUID></BookUID>
+  <BookDescription></BookDescription>
+  <UseVisual>false</UseVisual>
+  <BookTitle></BookTitle>
+  <BookTitlePageContent>
+  </BookTitlePageContent>
+  <Pages>
+    <PageContent>
+      <PageTitle></PageTitle>
+      <TextContent>
+      </TextContent>
+    </PageContent>
+  </Pages>
+</LoreBookDefinition>
+```
+
+
+
+Beast Golems
+
+Write a four page study from the perspective of a biologist named Gep who escaped a Beast Golem and then decided to Beast Golems and to see how they seem to mimic natural biology with advanced magic, but fails to find out anything new infromation leading to this frustrating them, in the style of charles darwin
+
+The biologist names his study target the informal name rattles, because it has a loose joint in the back right leg cause it to rattle while moving.
+
+Here is some information on Beast Golems
+
+Description
+Most of the Golems were constructed in Harmattan and in the Electric Lab in Abrassar during the initial attack from The Scourge which struck Aurai around 100 years ago. The Golems were specifically designed to match the Scourge in combat, which can be seen in the visual resemblances as well as similar combat styles.
+
+There are also other types of Golems created in other ways, such as the creations of the Light Mender and Plague Doctor.
+These Golems are more semi-mechanical, and are heavily imbued with the magic of the Liches.
+
+Common Attributes
+Commonly immune to Bleeding and Poison effects
+Usually resistant to Decay Decay and vulnerable to Ethereal Ethereal, with some exceptions
+
+in this format
+
+```xml
+<LoreBookDefinition>
+  <ItemID></ItemID>
+  <BookUID></BookUID>
+  <BookDescription></BookDescription>
+  <UseVisual>false</UseVisual>
+  <BookTitle></BookTitle>
+  <BookTitlePageContent>
+  </BookTitlePageContent>
+  <Pages>
+    <PageContent>
+      <PageTitle></PageTitle>
+      <TextContent>
+      </TextContent>
+    </PageContent>
+  </Pages>
+</LoreBookDefinition>
+```

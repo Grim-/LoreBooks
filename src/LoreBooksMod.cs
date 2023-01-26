@@ -119,14 +119,8 @@ namespace LoreBooks
         {
             OnReady?.Invoke();
         }
-        private void SL_OnPacksLoaded()
-        {
-            SetUpItem();
-            FindXMLDefinitions();
-            BookButtonPrefab = OutwardHelpers.GetFromAssetBundle<GameObject>("lorebooks", "lorebookui", "UIBookButton");
-        }
 
-        private void SetUpItem()
+        private void SL_OnPacksLoaded()
         {
             SL_Equipment SeekingStone = new SL_Equipment()
             {
@@ -154,15 +148,18 @@ namespace LoreBooks
             };
 
             SeekingStone.ApplyTemplate();
+
+            FindXMLDefinitions();
+            BookButtonPrefab = OutwardHelpers.GetFromAssetBundle<GameObject>("lorebooks", "lorebookui", "UIBookButton");
         }
 
+        #region Custom Book Stuff
 
         private void OnBookLoadingComplete()
         {
             AddEmonomiconEffects();
             AddMagicalTomeHairEffects();
         }
-
         private void AddMagicalTomeHairEffects()
         {
             //style
@@ -309,6 +306,10 @@ namespace LoreBooks
             }
         }
 
+        #endregion
+
+        #region XML
+
         private void FindXMLDefinitions()
         {
             string[] directoriesInPluginsFolder = Directory.GetDirectories(Paths.PluginPath);
@@ -359,8 +360,6 @@ namespace LoreBooks
 
             OnBooksLoaded?.Invoke();
         }
-
-
         public T DeserializeFromXML<T>(string path)
         {
             XmlSerializer serializer = new XmlSerializer(typeof(T));
@@ -373,7 +372,7 @@ namespace LoreBooks
         {
             return Directory.Exists(FolderLocation);
         }
-
+        #endregion
 
         #region LoreBook
         /// <summary>

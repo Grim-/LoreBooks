@@ -1,0 +1,30 @@
+<LoreBookDefinition>
+  <ItemID>-2931</ItemID>
+  <BookUID>lorebook.huntersjournal.alphataunosaur</BookUID>
+  <BookDescription>A hunter's account of their encounter with an Alpha Taunosaur, as told from beyond the grave.</BookDescription>
+  <UseVisual>false</UseVisual>
+  <BookTitle>Encounter with an Alpha Taunosaur</BookTitle>
+  <BookTitlePageContent>
+  "I am a hunter, long dead, but my tale lives on. This is the story of my encounter with the mighty Alpha Taunosaur, a beast unlike any other I had ever faced. I was tasked with hunting it down by the locals, little did I know the true power of this creature."
+  </BookTitlePageContent>
+  <Pages>
+    <PageContent>
+      <PageTitle>Combat and Tactics</PageTitle>
+      <TextContent>
+      "These creatures are highly aggressive, and will engage the player upon sight. They are much more powerful than their base variants, especially in damage and durability. Their claws inflict bleeding and they can fire a large Fire explosion which deals 35 Fire Fire damage and 130 Impact."
+      </TextContent>
+    </PageContent>
+    <PageContent>
+      <PageTitle>Habitat</PageTitle>
+      <TextContent>
+      "Alpha Tuanosaurs are rarely found within the Hallowed Marsh region. There is usually one outside the giant tree in the center of the map, as well as one inside the Reptilian Lair. It lives in packs, with only one Alpha per pack."
+      </TextContent>
+    </PageContent>
+    <PageContent>
+      <PageTitle>My Encounter</PageTitle>
+      <TextContent>
+      "I had heard the rumors of the beast and its power, but I did not truly understand until I faced it myself. The Alpha Taunosaur was massive, standing taller than any creature I had ever seen. Its roar shook the very earth beneath my feet. I fought with all my might, but in the end, it was the Alpha Taunosaur who emerged victorious. I may be dead, but my memory lives on in this tale, a warning to all hunters who dare to face the might of the Alpha Taunosaur."
+      </TextContent>
+    </PageContent>
+  </Pages>
+</LoreBookDefinition>

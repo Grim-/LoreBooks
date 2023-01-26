@@ -1,0 +1,83 @@
+<LoreBookDefinition>
+  <ItemID>-2932</ItemID>
+  <BookUID>lorebook.huntersjournal.firstcannibal</BookUID>
+  <BookDescription>This is a tattered old journal, specked with dirt and blood.</BookDescription>
+  <UseVisual>false</UseVisual>
+  <BookTitle>Tattered Cave Journal</BookTitle>
+  <BookTitlePageContent>This is a tattered old journal, specked with dirt and blood. </BookTitlePageContent>
+  <Pages>
+    <PageContent>
+      <PageTitle>Day 1</PageTitle>
+      <TextContent>
+        We were so excited to explore this cave.
+        My friends, Sarah and Jim, and I had always been adventurous and loved to explore new places, ever since we were little.
+        We had heard rumors of a cave with a giant stone face in the Enmerkar Forest that was said to be filled with ancient treasures.
+        Me and Sarah couldn't resist the opportunity to check it out, Jim didn't want to go, I teased him and called him a wimp eventually he agreed.
+
+        We had a plan, Jim would bring food, Sarah would bring the rope and properly secure it, her papa is a sailor so she knows how to tie knots. I brought the lantern and my journal to document our finds.
+        We arrived at the cave and began our descent. It was dark and damp, but we were determined to find something valuable.
+      </TextContent>
+    </PageContent>
+    <PageContent>
+      <PageTitle>Day 2</PageTitle>
+      <TextContent>
+        We had no idea what we were getting ourselves into.
+        Things have taken a turn for the worse.... Sarah didn't properly fasten the rope, apparently its all well and good knowing how to tie a knot correctly but that information becomes useless rather quickly when you forget to tie it at all.
+        We've been stuck in this cave for three days now and we're running out of food.
+        We've searched every inch of this cave and found nothing of value.
+        We're beginning to think that we may not make it out of here alive.
+        Why hasn't anyone come for us?
+      </TextContent>
+    </PageContent>
+    <PageContent>
+      <PageTitle>Day 3</PageTitle>
+      <TextContent>
+        Sarah suggested that we start rationing our food and water, which we didn't bring much of to begin with.
+        I couldn't bear the thought of starving to death in this cave, so I agreed.
+        But as the days passed and our food and water supplies dwindled, I began to feel a strange hunger. A hunger that I couldn't explain.
+        I dont know if it's a fever from being trapped in here with nothing to eat and just this stagnant, green-ish hued water to drink.
+      </TextContent>
+    </PageContent>
+    <PageContent>
+      <PageTitle>Day 5</PageTitle>
+      <TextContent>
+        It was either that or die of starvation. I know it's wrong, but I can't help the way I feel.
+
+        Sarah was hesitant at first, Jim called us monsters.
+        But eventually we all agreed to it, we're going to draw straws tomorrow if no one comes to resuce us..oh god.
+
+        I know it's terrible and I'll never be able to forgive myself, but it seems like the only option.
+      </TextContent>
+    </PageContent>
+    <PageContent>
+      <PageTitle>Day 6</PageTitle>
+      <TextContent>
+          I drew the short straw.
+          Sarah and Jim don't know yet they are too hungry to think straight before that even mattered a fight broke out, Jim screamed 'LOOK AT HOW AT SHES BEEN STARING AT US, LOOK AT HER EYES SARAH!'.
+          Jim dropped his straw, I picked it up for him.
+      </TextContent>
+    </PageContent>
+    <PageContent>
+      <PageTitle>Day ????</PageTitle>
+      <TextContent>
+        Jim is gone, Sarah hasn't been the same since, if it bothered her that much she shouldn't have ate.
+        Sarah would be fine, Jim would be fine, I WOULD BE FINE! IF Sarah remembered to tie the rope.
+
+        I keep blacking out, I suppose its to be expected, I don't think I have energy to even write anymore, nor much ink come to think on it.
+
+        Why didn't she tie the rope, was she trying to kill us?
+        The lantern is almost empty now, I seem to see better away from the light, its almost blinding.
+
+        I can't stop thinking about the legend of the Wendigo.
+
+        A powerful being, borne of the frost and vulnerable to only to the weapons wielded by the gods, lightning and fire.
+
+        Unstoppable.
+
+        Hungry.
+
+        I must eat.
+      </TextContent>
+    </PageContent>
+  </Pages>
+</LoreBookDefinition>

@@ -1,0 +1,44 @@
+<LoreBookDefinition>
+  <ItemID>-2933</ItemID>
+  <BookUID>lorebook.beastgolems</BookUID>
+  <BookDescription>A biologist's study on the advanced magic and biology of Beast Golems</BookDescription>
+  <UseVisual>false</UseVisual>
+  <BookTitle>Gep's Study on Beast Golems: Mimicry of Natural Biology with Advanced Magic</BookTitle>
+  <BookTitlePageContent>
+    This study, conducted by biologist Gep, delves into the advanced magic and biology of Beast Golems, specifically focusing on a specific individual informally referred  to hereafter as "Rattles" due to a loose joint in its back right leg causing it to rattle while moving.
+    (Note : And this is the only reason I am able to study it!)
+  </BookTitlePageContent>
+  <Pages>
+    <PageContent>
+      <PageTitle>Background on Beast Golems</PageTitle>
+      <TextContent>
+      Most of the Beast Golems were constructed in Harmattan and in the Electric Lab in Abrassar during the initial attack from The Scourge which struck Aurai around 100 years ago.
+      The Golems were specifically designed to match the Scourge in combat, which can be seen in the visual resemblances as well as similar combat styles.
+      </TextContent>
+      <TextContent>
+      I have heard rumour of the existence of other types of Golems created in other ways by powerful beings, but a man of my profession does not set any store by rumour!
+      </TextContent>
+    </PageContent>
+    <PageContent>
+      <PageTitle>Common Attributes</PageTitle>
+      <TextContent>
+       Almost all Beast Golems are aggressive.
+       Commonly immune to Bleeding and Poison effects.
+       Usually resistant to Decay and vulnerable to Ethereal, with some exceptions.
+      </TextContent>
+    </PageContent>
+    <PageContent>
+      <PageTitle>Gep's Study</PageTitle>
+      <TextContent>
+       As a biologist, I was intrigued by the advanced magic and biology of the Beast Golems. I wanted to understand how they mimic natural biology with this advanced magic.
+       If we are to accept the idea that their creators were capable of shaping them into all manner of forms, why a decidedly canine-like creature?
+
+       However, after extensive research and examination of "rattles", I have unfortunately not found any new information that sheds light on this topic they simply remain a mystery of a higher order than my current understanding.
+      </TextContent>
+      <TextContent>
+      The advanced magic used in their creation and maintenance seems to override any natural biological processes, making it impossible for me to draw any comparisons.
+      This is incredibly frustrating, as it seems the secrets of the Beast Golems will remain a mystery.
+      </TextContent>
+    </PageContent>
+  </Pages>
+</LoreBookDefinition>

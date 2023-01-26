@@ -1,0 +1,46 @@
+<LoreBookDefinition>
+  <ItemID>-2930</ItemID>
+  <BookUID>lorebook.huntersjournal.manticore</BookUID>
+  <BookDescription>A journal detailing the hunt for a manticore.</BookDescription>
+  <UseVisual>false</UseVisual>
+  <BookTitle>Hunter's Journal: The Hunt for a Manticore</BookTitle>
+  <BookTitlePageContent>
+  </BookTitlePageContent>
+  <Pages>
+    <PageContent>
+      <PageTitle>Day 1: Preparations</PageTitle>
+      <TextContent>
+        Today, I set out to hunt the fabled manticore.
+
+        I have heard tales of its deadly poison, its resistance to decay, and its ability to launch spikes from its tail.
+        I knew I had to be prepared.
+        I gathered my weapons, including a sword imbued with fire damage, and an antidote for the manticore's poison.
+        I also packed supplies for the journey, including food and water.
+        I set out early in the morning, heading west of the Cabal of Wind Temple in the south of the Enmerkar Forest. I knew this was where the manticore was said to reside.
+      </TextContent>
+    </PageContent>
+    <PageContent>
+      <PageTitle>Day 2: The Hunt Begins</PageTitle>
+      <TextContent>
+        I arrived at the Enmerkar Forest in the afternoon, and immediately set out to search for the manticore.
+        I knew it would be a difficult task, as the forest is vast and the manticore is elusive.
+        I searched for signs of the creature, such as tracks or scat. I also listened for its distinctive roar. But I found nothing.
+        As the sun began to set, I set up camp for the night. I knew the hunt would be a long one, and I needed to be well-rested for the challenges ahead.
+      </TextContent>
+    </PageContent>
+    <PageContent>
+      <PageTitle>Day 3: The Encounter</PageTitle>
+      <TextContent>
+        Today was the day. I woke up early, eager to continue the hunt.
+
+        As I was packing up camp, I heard a loud roar in the distance. I knew it was the manticore.
+        I followed the sound, and soon came across the creature. It was massive, with scales as black as night and a tail that could launch six spikes at once. I knew I had to be careful.
+
+        We engaged in battle, and it was fierce.
+
+        The manticore's pounce and charge attack had long ranges, and its spikes were deadly... But I had prepared well, and my fire sword proved to be effective against the creature.
+        In the end, I emerged victorious. I had hunted and killed the manticore. I took its hide and spikes as trophies, and returned home with tales of my adventure to share with others.
+      </TextContent>
+    </PageContent>
+  </Pages>
+</LoreBookDefinition>
