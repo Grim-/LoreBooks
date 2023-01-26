@@ -142,17 +142,48 @@ You can also reference books once the OnBooksLoaded event has fired, allowing yo
         private void OnBookLoadingComplete()
         {
             //do things with the emonomicon
-            if (this.HasLoreBook(EmonomiconID))
+            if (LoreBooksMod.Instance.HasLoreBook("emo.emonomicon"))
             {
                 //get the book reference
-                LoreBook featureBook = this.GetLoreBook(EmonomiconID);
+                LoreBook featureBook = LoreBooksMod.Instance.GetLoreBook("emo.emonomicon");
 
                 if (featureBook != null)
                 {
-                    featureBook.OnBookOpened += (Character Character) =>
+                    Dictionary<AreaManager.AreaEnum, Area> Areas = new Dictionary<AreaManager.AreaEnum, Area>();
+
+                    Area Harmattan = AreaManager.Instance.GetArea(AreaManager.AreaEnum.Harmattan);
+                    Areas.Add(AreaManager.AreaEnum.Harmattan, Harmattan);
+
+                    Area CierzoOutside = AreaManager.Instance.GetArea(AreaManager.AreaEnum.CierzoOutside);
+                    Areas.Add(AreaManager.AreaEnum.CierzoOutside, CierzoOutside);
+
+                    Area Berg = AreaManager.Instance.GetArea(AreaManager.AreaEnum.Berg);
+                    Areas.Add(AreaManager.AreaEnum.Berg, Berg);
+
+                    Area Monsoon = AreaManager.Instance.GetArea(AreaManager.AreaEnum.Monsoon);
+                    Areas.Add(AreaManager.AreaEnum.Monsoon, Monsoon);
+
+
+                    int StartingPageCount = featureBook.PageCount;
+                    foreach (var area in Areas)
                     {
-                        Character.CharacterUI.NotificationPanel.ShowNotification("Book opened");
-                    };
+                        if (!featureBook.HasPage(StartingPageCount))
+                        {
+                            PageContent pagContent = new PageContent(area.Value.GetMapScreen(), $"{area.Value.GetName()}", area.Value.GetName());
+                            pagContent.IsButtonPage = true;
+
+                            PageContent Page = pagContent.AddButton($"Teleport To {area.Value.GetName()}", (UIBookPanel UIBookPanel, Character Character) =>
+                            {
+                                StartCoroutine(OutwardHelpers.TeleportToArea(Character, LoreBooksMod.Instance.GetBookManagerForCharacter(Character), area.Key));
+                            });
+
+                            featureBook.AddOrUpdatePageContent(StartingPageCount, pagContent);
+                            featureBook.LockPage(StartingPageCount);
+                            StartingPageCount++;
+                        }
+
+                    }
+
 
                     featureBook.OnPageOpened += (Character Character, int index) =>
                     {
@@ -160,44 +191,37 @@ You can also reference books once the OnBooksLoaded event has fired, allowing yo
                         {
                             Character.StatusEffectMngr.AddStatusEffect("Bleeding");
                         }
-
-                        if (index == 2)
+                        else if(index != 1 || index != 0)
                         {
-
                             if (Character.StatusEffectMngr.HasStatusEffect("Bleeding"))
                             {
                                 Character.StatusEffectMngr.RemoveStatusWithIdentifierName("Bleeding");
-                            }                         
+                            }
                         }
                     };
-
 
                     featureBook.OnInteractKeyPressed += (LoreBook LoreBook, int page, Character Character) =>
                     {
                         //if on page 2
                         if (page == 2)
                         {
-                            LoreBook cached = LoreBook;
-                            Character.CharacterUI.NotificationPanel.ShowNotification("Interact key pressed!");
-
-                            //if page 3 doesn't exist
-                            if (!cached.HasPage(3))
-                            {
-                                Character.CharacterUI.NotificationPanel.ShowNotification("You unlocked the hidden page!");
-                                cached.AddOrUpdatePageContent(3, new PageContent(null, $"{Character.Name}", "You unlocked the hidden page!"));
-                                UIBookPanel bookPanel = LoreBooksMod.Instance.GetBookManagerForCharacter(Character);
-                                bookPanel.ChangeToPage(cached, 3);
-                            }
+                            LoreBook.UnlockPages(new int[] { 3, 4, 5, 6 });
                         }
-
-      
+                        return false;
                     };
 
                     featureBook.CanOpenPredicate += (Character Character, LoreBook LoreBook) =>
                     {
-                        return Character.Mana > 0;
+                        if (Character.Mana <= 0)
+                        {
+                            Character.CharacterUI.NotificationPanel.ShowNotification("You cannot open the Emonomicon without a deeper understanding of magic.. find the source of the conflux.");
+                            return false;
+                        }
+
+                        return true;
                     };
                 }
+
 
             }
         }
