@@ -203,7 +203,8 @@ namespace LoreBooks
                     //just triggering the property before the for loop so the HairMaterials array is filled
                     CharacterManager.CharacterVisualsPresets.ToString();
 
-                    for (int i = 0; i < CharacterManager.CharacterVisualsPresets.HairMaterials.Length; i++)
+                    //there are 11 original hair colors
+                    for (int i = 0; i < 10; i++)
                     {
                         PageContent pageContent = new PageContent(null, $"Hair Color {i}", "Press the interact key to choose this hair style.");
                         featureBook.AddOrUpdatePageContent(i, pageContent);
