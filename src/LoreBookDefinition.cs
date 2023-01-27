@@ -10,6 +10,7 @@ public class LoreBookDefinition
     public int TargetItemID;
     public string BookUID;
     public string BookTitle;
+    public bool GenerateChaptersPage;
     public string BookDescription;
     public string BookTitlePageContent;
     public bool UseVisual = false;

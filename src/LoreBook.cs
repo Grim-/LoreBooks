@@ -31,6 +31,7 @@ namespace LoreBooks
         public Action<int, PageContent> OnPageRemoved;
 
         public bool UseVisual = false;
+        public bool GenerateChapterPage = false;
         public Color VisualColor = Color.cyan;
 
 
@@ -42,6 +43,8 @@ namespace LoreBooks
         [XmlIgnoreAttribute]
         public Action<LoreBook> OnBookPageInfoChange;
 
+        [XmlIgnoreAttribute]
+        public PageContent ChapterPage;
         public int PageCount => PagesContent.Count;
         public int UnlockedPageCount => PagesInfo.Where(x => x.Value.PageUnlocked).Count();
         private Dictionary<int, PageContent> PagesContent = new Dictionary<int, PageContent>();
@@ -53,6 +56,17 @@ namespace LoreBooks
         {
             BookUID = bookUID;
             OnBookOpened = onBookOpened;
+        }
+
+
+        public void AddNewPage(PageContent PageContent)
+        {
+            int CurrentCount = PageCount;
+
+            if (!HasPage(CurrentCount))
+            {
+                AddOrUpdatePageContent(CurrentCount, PageContent);
+            }
         }
 
         public void AddOrUpdatePageContent(int index, PageContent content)
@@ -67,6 +81,8 @@ namespace LoreBooks
                 {
                     PagesInfo.Add(index, new PageInfo());
                 }
+
+                if(GenerateChapterPage) GenerateChapters();
             }
             else
             {
@@ -82,8 +98,37 @@ namespace LoreBooks
                 PagesContent[index].ParentBook = null;
                 OnPageRemoved?.Invoke(index, PagesContent[index]);
                 PagesContent.Remove(index);
+
+                if (GenerateChapterPage) GenerateChapters();
             }
         }
+
+
+
+        public PageContent GenerateChapters()
+        {
+            PageContent ChapterPage = new PageContent(null, "Chapters", "");
+
+            ChapterPage.IsButtonPage = true;
+
+            foreach (var item in PagesContent)
+            {
+                if (item.Value.PageTitle == "Chapters")
+                {
+                    continue;
+                }
+
+                ChapterPage.AddButton(item.Value.PageTitle, (UIBookPanel UIBookPanel, Character Character) =>
+                {
+                    UIBookPanel.ChangeToPage(this, item.Key);
+                });
+            }
+
+            AddOrUpdatePageContent(1, ChapterPage);
+            return ChapterPage;
+        }
+
+
         public bool HasViewedPage(int pageIndex)
         {
             if (PagesInfo.ContainsKey(pageIndex))

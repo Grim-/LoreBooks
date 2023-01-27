@@ -7,6 +7,81 @@ using System.Threading.Tasks;
 
 namespace LoreBooks
 {
+
+    public class CustomSaveData : PlayerSaveExtension
+    {
+
+        public List<WrapperClass> CharacterInts;
+
+        public override void ApplyLoadedSave(Character character, bool isWorldHost)
+        {
+            //YourInt is now filled with whatever value it had last time it saved
+
+            if (CharacterIntsContains(character.UID))
+            {
+                WrapperClass data = GetCharacterData(character.UID);
+
+                //do stuff
+            }
+        }
+
+        public override void Save(Character character, bool isWorldHost)
+        {
+            //Set this value as the game saves
+            //YourInt = 
+
+            if (CharacterIntsContains(character.UID))
+            {
+                UpdateCharacterIntValue(character.UID, 0001);
+            }
+            else
+            {
+                AddCharacterIntValue(character.UID, 0001);
+            }
+        }
+
+
+        public void AddCharacterIntValue(string CharacterUID, int Value)
+        {
+            if (!CharacterIntsContains(CharacterUID))
+            {
+                WrapperClass data = new WrapperClass();
+                data.CharacterUID = CharacterUID;
+                data.CharacterIntValue = Value;
+
+                CharacterInts.Add(data));
+            }
+        }
+
+        public void UpdateCharacterIntValue(string CharacterUID, int Value)
+        {
+            if (CharacterIntsContains(CharacterUID))
+            {
+                WrapperClass data = GetCharacterData(CharacterUID);
+                data.CharacterUID = CharacterUID;
+                data.CharacterIntValue = Value;
+            }
+        }
+
+        public bool CharacterIntsContains(string CharacterUID)
+        {
+            return CharacterInts.Where(x => x.CharacterUID == CharacterUID) != null;
+        }
+
+        public WrapperClass GetCharacterData(string CharacterUID)
+        {
+            return CharacterInts.Where(x => x.CharacterUID == CharacterUID).First();
+        }
+    }
+
+    [System.Serializable]
+    public class WrapperClass
+    {
+        public string CharacterUID;
+        public int CharacterIntValue;
+    }
+
+
     public class BookSaveData : PlayerSaveExtension
     {
         public List<BookData> BookMemory;

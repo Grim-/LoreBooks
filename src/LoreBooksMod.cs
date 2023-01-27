@@ -341,13 +341,25 @@ namespace LoreBooks
                             loreBook.VisualColor = new Color(bookDefinition.VisualColor.r, bookDefinition.VisualColor.g, bookDefinition.VisualColor.b, bookDefinition.VisualColor.a);
                             loreBook.UseVisual = bookDefinition.UseVisual;
                             loreBook.BookItemID = bookDefinition.ItemID;
+                            loreBook.GenerateChapterPage = bookDefinition.GenerateChaptersPage;
+
                             loreBook.AddOrUpdatePageContent(0, new PageContent(null, bookDefinition.BookTitle, bookDefinition.BookTitlePageContent));
 
-                            for (int i = 0; i < bookDefinition.Pages.Count; i++)
+
+                            int StartIndex = 0;
+
+                            if (bookDefinition.GenerateChaptersPage)
+                            {
+                                StartIndex = 2;
+                            }
+  
+                            for (int i = StartIndex; i < bookDefinition.Pages.Count; i++)
                             {
                                 int IPlus = i + 1;
                                 loreBook.AddOrUpdatePageContent(IPlus, new PageContent(null, bookDefinition.Pages[i].PageTitle, bookDefinition.Pages[i].TextContent));
                             }
+
+
 
                             LoreBooksMod.Instance.AddLoreBook(bookDefinition.ItemID, bookDefinition.BookUID, loreBook);
                         }
