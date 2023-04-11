@@ -49,7 +49,7 @@ namespace LoreBooks
                 data.CharacterUID = CharacterUID;
                 data.CharacterIntValue = Value;
 
-                CharacterInts.Add(data));
+                CharacterInts.Add(data)/*)*/;
             }
         }
 

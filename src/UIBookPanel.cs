@@ -30,8 +30,8 @@ namespace LoreBooks
 
         public GameObject ButtonContainer;
         public GameObject TextContainer;
-        
-        
+
+
 
         public CanvasGroup CanvasGroup => GetComponent<CanvasGroup>();
         //again cant use editor set references, I will cache it if it becomes a problem, 
@@ -74,7 +74,7 @@ namespace LoreBooks
                 SetTitleFont(Philsopher);
                 SetContentFont(Philsopher);
             }
-          
+
         }
 
         public void SetParentCharacter(Character Character)
@@ -157,6 +157,19 @@ namespace LoreBooks
             PrevButton = transform.Find("PreviousPage").gameObject.GetComponent<Button>();
             PreviousPageLabel = transform.Find("PreviousPageLabel").gameObject.GetComponent<Text>();
 
+            if (PreviousPageLabel != null && NextPageLabel != null)
+            {
+                if(LoreBooksMod.ShowKeybinds.Value)
+                {
+                    PreviousPageLabel.text = "[Q]";
+                    NextPageLabel.text = "[E]";
+                }
+                else
+                {
+                    PreviousPageLabel.enabled = false;
+                    NextPageLabel.enabled = false;
+                }
+            }
 
             if (PrevButton != null)
             {
@@ -171,7 +184,7 @@ namespace LoreBooks
 
             ContentLabel = transform.Find("Panel/Scroll View/Viewport/Content").gameObject.GetComponent<Text>();
         }
-  
+
         public void ShowBook(LoreBook loreBook)
         {
             if (loreBook != null)
@@ -207,7 +220,7 @@ namespace LoreBooks
                     }
 
                     SetCurrentLoreBook(loreBook);
-                }   
+                }
             }
         }
 
@@ -614,7 +627,7 @@ namespace LoreBooks
                 Background.material.SetFloat("_ShowEffect", 0);
             }
 
-   
+
         }
     }
 }

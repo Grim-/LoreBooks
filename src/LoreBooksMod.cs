@@ -45,6 +45,7 @@ namespace LoreBooks
 
 
         #region Config Entrys
+        public static ConfigEntry<bool> ShowKeybinds;
         public static ConfigEntry<float> UIScale;
         public static ConfigEntry<float> PageTransitionSpeed;
         public static ConfigEntry<float> LineSpacing;
@@ -76,6 +77,7 @@ namespace LoreBooks
             Log = this.Logger;
             Instance = this;
 
+            ShowKeybinds = Config.Bind(NAME, $"{NAME} keybind display", true, "display next/prev page keybind? (requires restart)");
 
             UIScale = Config.Bind(NAME, $"{NAME} UI Scale", 0.75f, "UI Scaling?");
             PageTransitionSpeed = Config.Bind(NAME, $"{NAME} Page Transition Speed", 1.6f, "Page Transition Speed");
